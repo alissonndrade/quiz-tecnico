@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Telecom Pro</title>
+    <title>Quiz Telecom Pro - Master</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, doc, setDoc, collection, query, orderBy, limit, onSnapshot, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
@@ -20,41 +21,40 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- TODAS AS QUESTÕES DOS SEUS PDFS ---
         const QUESTIONS = [
-            {q: "Padrão de criptografia Wi-Fi mais seguro?", o: ["WEP", "WAP", "WPA", "WPA2+AES"], c: 3, t: 15},
-            {q: "Não há disponibilidade de HP no tap. O que fazer?", o: ["Usar divisor", "Baixa #205 e abrir PE1", "Baixa #203", "Baixa #409"], c: 1, t: 25},
-            {q: "Intensidade de sinal Wi-Fi ideal (Analyzer)?", o: ["-10 a -70 dBm", "0 a +12 dBm", "40 a 52 dBmv", "-80 a -100 dBm"], c: 0, t: 20},
-            {q: "Inclinação da furadeira para furos externos?", o: ["15° para cima", "Reto", "15° para baixo", "45° para baixo"], c: 2, t: 15},
-            {q: "Níveis na saída tap do DC 06 (Entrada 15/12)?", o: ["10/8", "12.5/9.5", "15/12", "9/6"], c: 1, t: 30},
-            {q: "Níveis OUT/TAP no DC 12 (Entrada 19)?", o: ["16/7", "17/8", "18/7", "19/8"], c: 2, t: 30},
-            {q: "O que acontece ao amassar o cabo?", o: ["Mais blindagem", "Altera impedância", "Inversão de tilt", "Satura frequência"], c: 1, t: 20},
-            {q: "O que é PIP?", o: ["Ver sinal canal 270", "Janela pequena com outro canal", "Compartilhar arquivos", "Som de alerta"], c: 1, t: 20},
-            {q: "TV 4K Ultra HD conectada via Wi-Fi. Qual rede usar?", o: ["2.4 GHz", "5 GHz (Maior banda)", "Cabo apenas", "Ambas juntas"], c: 1, t: 25},
-            {q: "O que é REPLAY TV?", o: ["Gravar NOW", "Recomeçar evento atual / até 7 dias", "Repetir gols", "Assistir offline"], c: 1, t: 25},
-            {q: "Melhor qualidade de sinal Digital?", o: ["PS 100% / QS 100% / BER -5", "PS 60% / QS 100% / BER -8", "PS 90% / QS 70% / BER -7", "PS 95% / QS 70% / BER -6"], c: 1, t: 25},
-            {q: "O que é BER?", o: ["Erro de bit", "Erro de modulação", "Erro de sinal", "Erro de rede"], c: 0, t: 15},
-            {q: "Conteúdo gravado na nuvem fica disponível por?", o: ["30 dias", "45 dias", "90 dias", "180 dias"], c: 2, t: 15},
-            {q: "Caractere hexadecimal (F) na URA?", o: ["*6", "*06", "#6", "6"], c: 0, t: 15},
-            {q: "O que é TRACERT?", o: ["Configura Firewall", "Teste de rota / lentidão", "Teste de velocidade", "Antivírus"], c: 1, t: 20},
-            {q: "Padrão Wi-Fi com maior taxa de transmissão?", o: ["n", "b", "g", "ac"], c: 3, t: 15},
-            {q: "Comando para renovar IP?", o: ["ipconfig/all", "ipconfig/release", "ipconfig/renew", "chkdsk"], c: 2, t: 15},
-            {q: "IP de Decoder ONLINE inicia em?", o: ["10.", "168.", "189.", "192."], c: 0, t: 20},
-            {q: "7,5MBps equivale a qual velocidade contratada?", o: ["12 Mbps", "60 Mbps", "120 Mbps", "240 Mbps"], c: 1, t: 30},
-            {q: "Um IP Nateado (CGNAT) começa com?", o: ["192.", "100.", "255.", "10.10"], c: 1, t: 15},
-            {q: "Atenuação de um Splitter de 2 vias?", o: ["-3.5 dB", "-7.0 dB", "-1.0 dB", "-12 dB"], c: 0, t: 15},
-            {q: "O que é AutoHit?", o: ["Sinal de Wi-Fi", "Envio automático de HIT (SD, HD, HDMAX)", "Teste de velocidade", "Resreset do modem"], c: 1, t: 20},
-            {q: "Canal para validação de retorno e endereçáveis?", o: ["Canal 270", "Canal 262", "Canal 500", "Canal 1"], c: 1, t: 15},
-            {q: "Barreiras que pouco interferem no Wi-Fi?", o: ["Espelhos", "Madeira e Gesso", "Aquários", "Lajes"], c: 1, t: 15},
-            {q: "O que é DOCSIS?", o: ["Cabo de rede", "Interface de dados via cabo", "Tipo de decodificador", "Marca de roteador"], c: 1, t: 15},
-            {q: "Update ID 1 significa que o decoder possui?", o: ["Apenas SD", "Alta definição e NOW", "Somente rádio", "Bloqueio de sinal"], c: 1, t: 20},
-            {q: "Site oficial para teste de velocidade Claro?", o: ["fast.com", "speedtest.net", "brasilbandalarga.com.br", "claro.com.br"], c: 2, t: 15},
-            {q: "Função 'Autodesligar' do decoder deve ser?", o: ["Sempre desativada", "Mantida (para atualizações)", "Usada só de dia", "Configurada para 1h"], c: 1, t: 20},
-            {q: "Na saída de um Splitter de 3 vias (balanceado), a perda é?", o: ["-3.5 dB", "-4.8 dB", "-7.0 dB", "-12 dB"], c: 1, t: 20},
-            {q: "Onde o EMTA deve ser instalado preferencialmente?", o: ["No chão", "No sótão", "Cômodo central (cobertura 80%)", "Dentro de armários"], c: 2, t: 20},
-            {q: "Qual rede Wi-Fi sofre menos interferência?", o: ["2.4 GHz", "5 GHz", "AM", "FM"], c: 1, t: 15},
-            {q: "Para fixar o cabo em paredes de gesso usa-se?", o: ["Prego", "Rebite", "Bucha e Parafuso", "Fita adesiva"], c: 2, t: 15},
-            {q: "O que deve ser oferecido no final do atendimento?", o: ["Nada", "Desconto", "NOW, Controle e Minha Claro", "Outra visita"], c: 2, t: 20}
+            {q: "Padrão de criptografia Wi-Fi mais seguro?", o: ["WEP", "WAP", "WPA", "WPA2+AES"], c: 3, t: 15, e: "WPA2+AES é o padrão atual de mercado para segurança residencial."},
+            {q: "Não há disponibilidade de HP no tap. O que fazer?", o: ["Usar divisor", "Baixa #205 e abrir PE1", "Baixa #203", "Baixa #409"], c: 1, t: 25, e: "Código #205 indica falta de disponibilidade física no TAP."},
+            {q: "Intensidade de sinal Wi-Fi ideal (Analyzer)?", o: ["-10 a -70 dBm", "0 a +12 dBm", "40 a 52 dBmv", "-80 a -100 dBm"], c: 0, t: 20, e: "Sinais abaixo de -70 dBm causam instabilidade e lentidão."},
+            {q: "Inclinação da furadeira para furos externos?", o: ["15° para cima", "Reto", "15° para baixo", "45° para baixo"], c: 2, t: 15, e: "A inclinação para baixo evita que a água da chuva entre na residência."},
+            {q: "Níveis na saída tap do DC 06 (Entrada 15/12)?", o: ["10/8", "12.5/9.5", "15/12", "9/6"], c: 1, t: 30, e: "O DC 06 retira 6dB no TAP e perde cerca de 2.5dB na saída OUT."},
+            {q: "Níveis OUT/TAP no DC 12 (Entrada 19)?", o: ["16/7", "17/8", "18/7", "19/8"], c: 2, t: 30, e: "O DC 12 atenua 12dB no TAP e apenas 1dB na saída OUT."},
+            {q: "O que acontece ao amassar o cabo?", o: ["Mais blindagem", "Altera impedância", "Inversão de tilt", "Satura frequência"], c: 1, t: 20, e: "Amassados rompem a geometria do cabo, alterando a impedância (75 ohms)."},
+            {q: "O que é PIP?", o: ["Ver sinal canal 270", "Janela pequena com outro canal", "Compartilhar arquivos", "Som de alerta"], c: 1, t: 20, e: "Picture-in-Picture permite assistir dois canais ao mesmo tempo."},
+            {q: "TV 4K Ultra HD conectada via Wi-Fi. Qual rede usar?", o: ["2.4 GHz", "5 GHz (Maior banda)", "Cabo apenas", "Ambas juntas"], c: 1, t: 25, e: "A rede 5GHz possui maior largura de banda para vídeos em 4K."},
+            {q: "O que é REPLAY TV?", o: ["Gravar NOW", "Recomeçar evento atual / até 7 dias", "Repetir gols", "Assistir offline"], c: 1, t: 25, e: "Permite recomeçar programas que já começaram ou assistir o que passou."},
+            {q: "Melhor qualidade de sinal Digital?", o: ["PS 100% / QS 100% / BER -5", "PS 60% / QS 100% / BER -8", "PS 90% / QS 70% / BER -7", "PS 95% / QS 70% / BER -6"], c: 1, t: 25, e: "QS 100% e BER -8 (ou maior) indicam sinal sem erros de bit."},
+            {q: "O que é BER?", o: ["Erro de bit", "Erro de modulação", "Erro de sinal", "Erro de rede"], c: 0, t: 15, e: "Bit Error Rate: mede a quantidade de erros na transmissão digital."},
+            {q: "Conteúdo gravado na nuvem fica disponível por?", o: ["30 dias", "45 dias", "90 dias", "180 dias"], c: 2, t: 15, e: "As gravações expiram automaticamente após 3 meses (90 dias)."},
+            {q: "Caractere hexadecimal (F) na URA?", o: ["*6", "*06", "#6", "6"], c: 0, t: 15, e: "O código *6 é usado para representar o caractere F no sistema."},
+            {q: "O que é TRACERT?", o: ["Configura Firewall", "Teste de rota / lentidão", "Teste de velocidade", "Antivírus"], c: 1, t: 20, e: "Mostra o caminho dos pacotes e onde está ocorrendo o atraso (latência)."},
+            {q: "Padrão Wi-Fi com maior taxa de transmissão?", o: ["n", "b", "g", "ac"], c: 3, t: 15, e: "O padrão 802.11ac é superior aos padrões b/g/n."},
+            {q: "Comando para renovar IP?", o: ["ipconfig/all", "ipconfig/release", "ipconfig/renew", "chkdsk"], c: 2, t: 15, e: "O /renew solicita um novo endereço ao servidor DHCP."},
+            {q: "IP de Decoder ONLINE inicia em?", o: ["10.", "168.", "189.", "192."], c: 0, t: 20, e: "A rede de gerência dos decoders utiliza a faixa 10.x.x.x."},
+            {q: "7,5MBps equivale a qual velocidade contratada?", o: ["12 Mbps", "60 Mbps", "120 Mbps", "240 Mbps"], c: 1, t: 30, e: "Multiplicamos 7,5 por 8 (bits) para chegar aos 60 Mbps."},
+            {q: "Um IP Nateado (CGNAT) começa com?", o: ["192.", "100.", "255.", "10.10"], c: 1, t: 15, e: "A faixa 100.64.x.x é reservada para Carrier Grade NAT."},
+            {q: "Atenuação de um Splitter de 2 vias?", o: ["-3.5 dB", "-7.0 dB", "-1.0 dB", "-12 dB"], c: 0, t: 15, e: "Um divisor de 2 vias divide o sinal ao meio, perdendo 3.5dB em cada lado."},
+            {q: "O que é AutoHit?", o: ["Sinal de Wi-Fi", "Envio automático de HIT (SD, HD, HDMAX)", "Teste de velocidade", "Resreset do modem"], c: 1, t: 20, e: "Comando automático para ativar pacotes de canais no decoder."},
+            {q: "Canal para validação de retorno e endereçáveis?", o: ["Canal 270", "Canal 262", "Canal 500", "Canal 1"], c: 1, t: 15, e: "O 262 é o canal técnico para testes de comunicação bidirecional."},
+            {q: "Barreiras que pouco interferem no Wi-Fi?", o: ["Espelhos", "Madeira e Gesso", "Aquários", "Lajes"], c: 1, t: 15, e: "Materiais densos ou metálicos barram o sinal; madeira é mais 'transparente'."},
+            {q: "O que é DOCSIS?", o: ["Cabo de rede", "Interface de dados via cabo", "Tipo de decodificador", "Marca de roteador"], c: 1, t: 15, e: "Data Over Cable Service Interface Specification - o padrão do cabo modem."},
+            {q: "Update ID 1 significa que o decoder possui?", o: ["Apenas SD", "Alta definição e NOW", "Somente rádio", "Bloqueio de sinal"], c: 1, t: 20, e: "Identifica equipamentos capazes de rodar conteúdos HD e sob demanda."},
+            {q: "Site oficial para teste de velocidade Claro?", o: ["fast.com", "speedtest.net", "brasilbandalarga.com.br", "claro.com.br"], c: 2, t: 15, e: "É o site oficial homologado pela Anatel para medições oficiais."},
+            {q: "Função 'Autodesligar' do decoder deve ser?", o: ["Sempre desativada", "Mantida (para atualizações)", "Usada só de dia", "Configurada para 1h"], c: 1, t: 20, e: "O autodesligar garante que o decoder entre em standby e receba updates."},
+            {q: "Na saída de um Splitter de 3 vias (balanceado), a perda é?", o: ["-3.5 dB", "-4.8 dB", "-7.0 dB", "-12 dB"], c: 2, t: 20, e: "Splitters de 3 vias balanceados perdem 7dB em cada saída."},
+            {q: "Onde o EMTA deve ser instalado preferencialmente?", o: ["No chão", "No sótão", "Cômodo central (cobertura 80%)", "Dentro de armários"], c: 2, t: 20, e: "A centralização reduz áreas de sombra e melhora a cobertura Wi-Fi."},
+            {q: "Qual rede Wi-Fi sofre menos interferência?", o: ["2.4 GHz", "5 GHz", "AM", "FM"], c: 1, t: 15, e: "A rede 5GHz tem mais canais disponíveis e menos aparelhos interferindo."},
+            {q: "Para fixar o cabo em paredes de gesso usa-se?", o: ["Prego", "Rebite", "Bucha e Parafuso", "Fita adesiva"], c: 2, t: 15, e: "Gesso exige fixação mecânica adequada para não soltar com o tempo."},
+            {q: "O que deve ser oferecido no final do atendimento?", o: ["Nada", "Desconto", "NOW, Controle e Minha Claro", "Outra visita"], c: 2, t: 20, e: "Encantar o cliente mostrando as facilidades do ecossistema Claro."}
         ];
 
         let cur = 0, score = 0, timer, timeLeft, pName = "";
@@ -73,13 +73,14 @@
             timeLeft = q.t;
             document.getElementById('q-info').innerText = `Questão ${cur+1}/${QUESTIONS.length}`;
             document.getElementById('q-text').innerText = q.q;
+            document.getElementById('explanation').classList.add('hidden');
             const box = document.getElementById('opts');
             box.innerHTML = "";
             q.o.forEach((opt, i) => {
                 const b = document.createElement('button');
                 b.className = "btn";
                 b.innerText = opt;
-                b.onclick = () => select(i);
+                b.onclick = () => select(i, b);
                 box.appendChild(b);
             });
             runTimer();
@@ -92,27 +93,45 @@
             timer = setInterval(() => {
                 timeLeft--;
                 f.style.width = (timeLeft/QUESTIONS[cur].t*100) + "%";
-                if(timeLeft <= 0) select(-1);
+                if(timeLeft <= 0) select(-1, null);
             }, 1000);
         }
 
-        async function select(idx) {
+        function select(idx, clickedBtn) {
             clearInterval(timer);
-            if(idx === QUESTIONS[cur].c) score += (100 + (timeLeft * 10));
+            const correctIdx = QUESTIONS[cur].c;
+            const btns = document.querySelectorAll('.btn');
+            
+            // Desabilita botões para evitar duplo clique
+            btns.forEach(b => b.style.pointerEvents = "none");
+
+            if(idx === correctIdx) {
+                // ACERTOU
+                clickedBtn.classList.add('correct');
+                score += (100 + (timeLeft * 10));
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            } else {
+                // ERROU
+                if(clickedBtn) clickedBtn.classList.add('wrong');
+                btns[correctIdx].classList.add('correct'); // Mostra a certa
+            }
+
+            // Mostra explicação
+            const expBox = document.getElementById('explanation');
+            expBox.innerText = QUESTIONS[cur].e;
+            expBox.classList.remove('hidden');
+
             cur++;
-            loadQ();
+            setTimeout(loadQ, 3500); // 3.5 segundos para ler a explicação
         }
 
         async function finish() {
             document.getElementById('quiz').classList.add('hidden');
             document.getElementById('result').classList.remove('hidden');
             document.getElementById('final-msg').innerText = `${pName}, total: ${score} pts!`;
-            
-            // SALVAR NO FIREBASE
             await setDoc(doc(db, "ranking", pName + "_" + Date.now()), { name: pName, score: score });
         }
 
-        // ATUALIZAÇÃO DO RANKING EM TEMPO REAL (Para o Telão)
         const qRank = query(collection(db, "ranking"), orderBy("score", "desc"), limit(10));
         onSnapshot(qRank, (snap) => {
             const list = document.getElementById('ranking-list');
@@ -132,41 +151,47 @@
         };
     </script>
     <style>
-        :root { --red: #e31a1c; --bg: #f8f9fa; }
-        body { font-family: sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 10px; }
-        .card { width: 100%; max-width: 450px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
-        .btn { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: #fff; font-size: 15px; }
-        .btn:hover { background: #f0f0f0; }
-        .timer-bar { height: 6px; background: #eee; border-radius: 3px; margin: 10px 0; overflow: hidden; }
+        :root { --red: #e31a1c; --bg: #f0f2f5; --green: #28a745; --pink: #ff69b4; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 10px; }
+        .card { width: 100%; max-width: 480px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); text-align: center; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; cursor: pointer; background: #fff; font-size: 16px; font-weight: 600; transition: 0.3s; }
+        .correct { background: var(--green) !important; color: white !important; border-color: var(--green) !important; transform: scale(1.02); }
+        .wrong { background: var(--pink) !important; color: white !important; border-color: var(--pink) !important; }
+        .timer-bar { height: 8px; background: #eee; border-radius: 4px; margin: 15px 0; overflow: hidden; }
         .timer-fill { height: 100%; background: var(--red); width: 100%; transition: 1s linear; }
+        .explanation-box { background: #fff9c4; padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: #555; border-left: 5px solid #fbc02d; }
         .hidden { display: none; }
         #ranking-list { list-style: none; padding: 0; text-align: left; }
-        #ranking-list li { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        #ranking-list li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; background: #fdfdfd; margin-bottom: 5px; border-radius: 5px; }
+        h1 { color: var(--red); margin-bottom: 5px; }
+        .logo { width: 80px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
     <div id="setup" class="card">
-        <h1>🏆 Quiz Telecom</h1>
-        <input type="text" id="p-name" placeholder="Seu Nome" style="width: 80%; padding: 10px; margin-bottom: 15px;">
-        <button class="btn" style="background: var(--red); color: #fff;" onclick="init()">INICIAR</button>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Claro_logo.svg/1200px-Claro_logo.svg.png" class="logo">
+        <h1>DESAFIO TÉCNICO</h1>
+        <p>Mostre que você é fera no campo!</p>
+        <input type="text" id="p-name" placeholder="Digite seu Nome" style="width: 85%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px;">
+        <button class="btn" style="background: var(--red); color: #fff; border: none;" onclick="init()">COMEÇAR AGORA</button>
     </div>
 
     <div id="quiz" class="card hidden">
-        <div id="q-info"></div>
+        <div id="q-info" style="color: #888; font-weight: bold;"></div>
         <div class="timer-bar"><div id="t-fill" class="timer-fill"></div></div>
-        <h3 id="q-text"></h3>
+        <h2 id="q-text" style="margin-bottom: 20px; color: #333;"></h2>
         <div id="opts"></div>
+        <div id="explanation" class="explanation-box hidden"></div>
     </div>
 
     <div id="result" class="card hidden">
-        <h2 id="final-msg"></h2>
-        <h4>📊 Ranking Global (Tempo Real)</h4>
+        <h2>🏆 RESULTADO FINAL</h2>
+        <h1 id="final-msg" style="font-size: 2rem;"></h1>
+        <hr>
+        <h4>📊 TOP 10 RANKING</h4>
         <ul id="ranking-list"></ul>
         <button class="btn" onclick="location.reload()">Jogar Novamente</button>
-        <button onclick="resetRanking()" style="font-size: 10px; color: #ccc; background: none; border: none; margin-top: 20px;">Resetar Dados</button>
+        <button onclick="resetRanking()" style="font-size: 10px; color: #ccc; background: none; border: none; margin-top: 30px; cursor: pointer;">Limpar Ranking (Admin)</button>
     </div>
 </body>
 </html>
-
-
-
