@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Técnico Telecom - Oficial</title>
+    <style>
+        :root { --claro: #e31a1c; --dark: #333; --gray: #f4f4f4; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--gray); margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .card { width: 100%; max-width: 500px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; margin-top: 20px; }
+        .timer-bar { height: 8px; background: #eee; border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .timer-fill { height: 100%; background: var(--claro); width: 100%; transition: width 1s linear; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; font-size: 16px; background: white; transition: 0.2s; }
+        .btn:hover { background: #f9f9f9; border-color: var(--claro); }
+        .hidden { display: none; }
+        #ranking-list { text-align: left; padding: 0; }
+        #ranking-list li { background: #fff; margin: 5px 0; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; border: 1px solid #ddd; }
+        .logo { width: 100px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
 
+<div id="setup" class="card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Claro_logo.svg/1200px-Claro_logo.svg.png" class="logo">
+    <h1>Desafio Técnico</h1>
+    <p>Prepare-se para a avaliação final!</p>
+    <input type="text" id="p-name" placeholder="Seu Nome ou Apelido" style="width: 90%; padding: 12px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #ccc;">
+    <button class="btn" style="background: var(--claro); color: white; border: none;" onclick="init()">COMEÇAR QUIZ</button>
+</div>
+
+<div id="quiz" class="card hidden">
+    <div id="q-info" style="font-weight: bold; color: #666; margin-bottom: 5px;"></div>
+    <div class="timer-bar"><div id="t-fill" class="timer-fill"></div></div>
+    <h2 id="q-text" style="font-size: 1.2rem;"></h2>
+    <div id="opts"></div>
+</div>
+
+<div id="result" class="card hidden">
+    <h2>Fim do Desafio!</h2>
+    <p id="final-msg" style="font-size: 1.2rem; font-weight: bold;"></p>
+    <h3>🏆 Ranking Local</h3>
+    <ul id="ranking-list"></ul>
+    <button class="btn" onclick="location.reload()">RECOMEÇAR</button>
+</div>
+
+<script>
+// QUESTÕES EXTRAÍDAS DOS SEUS PDFs
+const QUESTIONS = [
+    {q: "Qual o padrão de criptografia Wi-Fi mais seguro?", o: ["WEP", "WAP", "WPA", "WPA2"], c: 3, t: 15},
+    {q: "Tap lotado sem HP disponível. Qual o procedimento?", o: ["Usar divisor", "Baixa #205 e abrir PE1", "Baixa #203", "Baixa #409"], c: 1, t: 20},
+    {q: "Intensidade de sinal Wi-Fi ideal (Wi-Fi Analyzer)?", o: ["-10 a -70 dBm", "0 a +12 dBm", "40 a 52 dBmv", "-80 a -100 dBm"], c: 0, t: 20},
+    {q: "Inclinação correta ao furar de dentro para fora?", o: ["15° para cima", "Reto (90°)", "15° para baixo", "30° para cima"], c: 2, t: 15},
+    {q: "O que é Downstream?", o: ["Sinal do EMTA para o CMTS", "Sinal do CMTS para o EMTA", "Sinal do Medidor para o Tap", "Sinal de retorno"], c: 1, t: 15},
+    {q: "Saída Tap do DC 06 (Entrada CA: 15 / CB: 12)?", o: ["10/8", "15/12", "12,5/9,5", "9/6"], c: 2, t: 30},
+    {q: "Taxa de 7,5MBps equivale a qual velocidade contratada?", o: ["100 Mbps", "12 Mbps", "60 Mbps", "120 Mbps"], c: 2, t: 30},
+    {q: "Qual comando renova o endereço de IP?", o: ["ipconfig/all", "ipconfig/release", "ipconfig/renew", "tracert"], c: 2, t: 15},
+    {q: "IP Nateado (CGNAT) começa com qual número?", o: ["192.168", "100.64", "10.0", "200.150"], c: 1, t: 20},
+    {q: "Melhor qualidade de sinal Digital (Diagnóstico)?", o: ["PS 100% / QS 100% / BER -5", "PS 60% / QS 100% / BER -8", "PS 90% / QS 70% / BER -7", "PS 95% / QS 70% / BER -6"], c: 1, t: 25}
+];
+
+let cur = 0, score = 0, timer, timeLeft, pName = "";
+
+function init() {
+    pName = document.getElementById('p-name').value;
+    if(!pName) return alert("Digite seu nome!");
+    document.getElementById('setup').classList.add('hidden');
+    document.getElementById('quiz').classList.remove('hidden');
+    loadQ();
+}
+
+function loadQ() {
+    if(cur >= QUESTIONS.length) return finish();
+    const q = QUESTIONS[cur];
+    timeLeft = q.t;
+    document.getElementById('q-info').innerText = `QUESTÃO ${cur+1} DE ${QUESTIONS.length}`;
+    document.getElementById('q-text').innerText = q.q;
+    const box = document.getElementById('opts');
+    box.innerHTML = "";
+    
+    q.o.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.className = "btn";
+        b.innerText = opt;
+        b.onclick = () => select(i);
+        box.appendChild(b);
+    });
+    runTimer();
+}
+
+function runTimer() {
+    const f = document.getElementById('t-fill');
+    f.style.width = "100%";
+    clearInterval(timer);
+    timer = setInterval(() => {
+        timeLeft--;
+        f.style.width = (timeLeft/QUESTIONS[cur].t*100) + "%";
+        if(timeLeft <= 0) select(-1);
+    }, 1000);
+}
+
+function select(idx) {
+    clearInterval(timer);
+    const btns = document.querySelectorAll('.btn');
+    if(idx === QUESTIONS[cur].c) {
+        score += (100 + (timeLeft * 10));
+    }
+    cur++;
+    setTimeout(loadQ, 500);
+}
+
+function finish() {
+    document.getElementById('quiz').classList.add('hidden');
+    document.getElementById('result').classList.remove('hidden');
+    document.getElementById('final-msg').innerText = `${pName}, você fez ${score} pontos!`;
+    saveRank();
+}
+
+function saveRank() {
+    let r = JSON.parse(localStorage.getItem('quiz_rank') || "[]");
+    r.push({n: pName, s: score});
+    r.sort((a,b) => b.s - a.s);
+    localStorage.setItem('quiz_rank', JSON.stringify(r));
+    const list = document.getElementById('ranking-list');
+    list.innerHTML = "";
+    r.slice(0, 5).forEach((v, i) => {
+        list.innerHTML += `<li><span>${i+1}º ${v.n}</span> <b>${v.s} pts</b></li>`;
+    });
+}
+</script>
+</body>
+</html>
