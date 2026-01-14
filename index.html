@@ -7,88 +7,136 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { 
-            --netflix-red: #e50914; 
-            --dark-bg: #141414; 
-            --glass: rgba(255, 255, 255, 0.1);
+            --claro-red: #e50914; 
+            --procisa-blue: #000080;
+            --light-bg: #ffffff; 
+            --text-dark: #333333;
             --gold: #f5c518;
         }
+        
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; 
-            background: radial-gradient(circle, #232323 0%, #000000 100%); 
-            color: white; display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0; overflow-x: hidden;
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background-color: var(--light-bg); 
+            color: var(--text-dark); 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; /* Melhor para scroll mobile */
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 10px;
+            box-sizing: border-box;
         }
         
-        /* Container Estilo Vidro (Glassmorphism) */
+        /* Container Principal ajustado para Celular */
         .card { 
-            width: 90%; max-width: 700px; background: var(--glass); 
-            backdrop-filter: blur(15px); padding: 40px; border-radius: 20px; 
-            border: 1px solid rgba(255,255,255,0.1); text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            width: 100%; 
+            max-width: 500px; 
+            background: #ffffff; 
+            padding: 20px; 
+            border-radius: 15px; 
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-top: 20px;
         }
 
-        .logo-procisa { width: 280px; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+        .logo-procisa { width: 100%; max-width: 220px; margin-bottom: 15px; }
         
-        /* Botões Estilo Netflix */
+        h1 { font-size: 1.8rem; color: var(--procisa-blue); margin: 10px 0; }
+        p { font-size: 1rem; color: #666; }
+
+        /* Botões Estilizados para Toque */
         .btn { 
-            display: block; width: 100%; padding: 18px; margin: 15px 0; 
-            border: none; border-radius: 8px; cursor: pointer; 
-            background: rgba(255,255,255,0.05); color: #ccc; font-size: 17px; 
-            font-weight: 500; text-align: left; padding-left: 25px; transition: 0.3s;
-            border: 1px solid transparent;
+            display: block; 
+            width: 100%; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border: 2px solid #eee; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            background: #f9f9f9; 
+            color: var(--text-dark); 
+            font-size: 16px; 
+            font-weight: 500; 
+            text-align: left; 
+            transition: 0.2s;
+            box-sizing: border-box;
         }
-        .btn:hover { background: rgba(255,255,255,0.15); color: white; border-color: white; transform: scale(1.02); }
         
-        .correct { background: #2ecc71 !important; color: white !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.4); }
-        .wrong { background: var(--netflix-red) !important; color: white !important; box-shadow: 0 0 20px rgba(229, 9, 20, 0.4); }
+        .btn:active { background: #e0e0e0; transform: scale(0.98); }
+        
+        .btn-primary {
+            background: var(--claro-red);
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            border: none;
+        }
 
-        /* Timer de Adrenalina */
-        .timer-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 20px 0; overflow: hidden; }
-        .timer-fill { height: 100%; background: var(--netflix-red); width: 100%; transition: 1s linear; }
-        .low-time { animation: pulse 0.5s infinite; background: #ffea00 !important; }
+        .correct { background: #2ecc71 !important; color: white !important; border-color: #27ae60; }
+        .wrong { background: var(--claro-red) !important; color: white !important; border-color: #b20710; }
+
+        /* Timer e Progresso */
+        .timer-bar { height: 6px; background: #eee; border-radius: 3px; margin: 15px 0; overflow: hidden; }
+        .timer-fill { height: 100%; background: var(--claro-red); width: 100%; transition: 1s linear; }
+        .low-time { background: #ffea00 !important; animation: pulse 0.5s infinite; }
+        
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        .progress-text { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: #888; }
-        .explanation-box { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 10px; margin-top: 20px; border-left: 4px solid var(--gold); text-align: left; font-style: italic; color: #ddd; }
+        .progress-text { font-size: 0.8rem; font-weight: bold; color: #888; text-transform: uppercase; }
+        .explanation-box { background: #fff9c4; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid var(--gold); text-align: left; font-size: 0.9rem; color: #444; }
         
         input[type="text"] { 
-            width: 80%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid #444; 
-            border-radius: 5px; color: white; font-size: 18px; margin-bottom: 20px; outline: none;
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; margin-bottom: 15px; outline: none; box-sizing: border-box;
         }
 
+        /* Ranking Mobile */
+        #ranking-list { padding: 0; margin-top: 15px; }
         #ranking-list li { 
-            background: rgba(255,255,255,0.05); padding: 15px; margin: 5px 0; 
-            border-radius: 10px; display: flex; justify-content: space-between;
+            list-style: none;
+            background: #fdfdfd; 
+            padding: 12px; 
+            margin: 5px 0; 
+            border-radius: 8px; 
+            display: flex; 
+            justify-content: space-between;
+            border: 1px solid #eee;
+            font-size: 0.9rem;
         }
-        .top-rank { border: 1px solid var(--gold); background: rgba(245, 197, 24, 0.1) !important; }
+        .top-rank { border: 1px solid var(--gold); background: #fffdf0 !important; font-weight: bold; }
+        .hidden { display: none !important; }
+
+        #incentive-msg { color: var(--claro-red); font-weight: bold; margin-top: 15px; font-size: 1rem; }
     </style>
 </head>
 <body>
 
     <div id="setup" class="card">
         <img src="logo-procisa.png" class="logo-procisa" alt="PROCISA">
-        <h1 style="font-size: 2.5rem; margin: 0;">CERTIFICAÇÃO PRO</h1>
-        <p style="color: #aaa; margin-bottom: 30px;">HFC / CLARO - TREINAMENTO TÉCNICO</p>
-        <input type="text" id="p-name" placeholder="NOME DO CANDIDATO">
-        <button id="btn-iniciar" class="btn" style="background: var(--netflix-red); color: white; text-align: center; font-weight: bold; border: none;">INICIAR EXAME</button>
+        <h1>Certificação PRO</h1>
+        <p>HFC / CLARO - Treinamento Técnico</p>
+        <input type="text" id="p-name" placeholder="Nome do Candidato">
+        <button id="btn-iniciar" class="btn btn-primary">INICIAR EXAME</button>
     </div>
 
     <div id="quiz" class="card hidden">
         <div class="progress-text" id="q-info"></div>
         <div class="timer-bar"><div id="t-fill" class="timer-fill"></div></div>
-        <h2 id="q-text" style="text-align: left; line-height: 1.4; min-height: 80px;"></h2>
+        <h3 id="q-text" style="text-align: left; font-size: 1.1rem; min-height: 60px;"></h3>
         <div id="opts"></div>
         <div id="explanation" class="explanation-box hidden"></div>
     </div>
 
     <div id="result" class="card hidden">
-        <h2 id="final-msg"></h2>
-        <p id="badge-msg" style="font-size: 1.5rem; color: var(--gold);"></p>
-        <div style="margin: 30px 0; text-align: left;">
-            <h4 style="text-transform: uppercase; color: #888;">Quadro de Honra</h4>
+        <h2 id="final-msg">Parabéns!</h2>
+        <p id="badge-msg" style="font-size: 1.2rem; font-weight: bold; color: var(--procisa-blue);"></p>
+        
+        <div id="ranking-container" style="margin: 20px 0; text-align: left;">
+            <h4 style="text-transform: uppercase; color: #888; border-bottom: 1px solid #eee; padding-bottom: 5px;">Top 5 Ranking</h4>
             <ul id="ranking-list"></ul>
+            <p id="incentive-msg" class="hidden">Vamos refazer para que seu nome apareça no ranking?</p>
         </div>
-        <button class="btn" style="text-align: center; background: white; color: black;" onclick="location.reload()">REFAZER AVALIAÇÃO</button>
+        
+        <button class="btn btn-primary" onclick="location.reload()">REFAZER AVALIAÇÃO 🚀</button>
     </div>
 
     <audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
@@ -96,7 +144,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, collection, query, orderBy, limit, onSnapshot, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBq8wjHbbLGh5mlhujzX2b_-FJX4e2AYzk",
@@ -110,7 +158,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // QUESTÕES INTEGRAIS DO DOCUMENTO (42 questões extraídas) 
         const QUESTIONS = [
             {q: "Nos casos onde os níveis de sinal não forem suficientes para atender todos os pontos, é essencial:", o: ["Conferir se não existe problemas com os níveis da Rede Externa e MDU.", "Instruir o cliente para que ele saiba de possíveis problemas em alguns pontos.", "Relatar os níveis inadequados em OS sem orientar o cliente.", "Realizar a instalação e informar que ele ligue na CRN."], c: 0, t: 30, e: "Sempre valide a rede externa antes de prosseguir."},
             {q: "Qual o procedimento correto para o técnico finalizar o preenchimento da O.S. DIGITAL?", o: ["Clicar no botão 'adotar e assinar'", "Clicar no botão 'concluir'", "Clicar no botão 'avançar'", "Clicar no botão 'assinar ordem de serviço'"], c: 0, t: 25, e: "O encerramento oficial é via 'adotar e assinar'."},
@@ -145,12 +192,12 @@
             {q: "Melhor qualidade de sinal digital no diagnóstico?", o: ["PS 100% / QS 100% / BER -5", "PS 60% / QS 100% / BER -8", "PS 90% / QS 70%", "PS 95% / QS 70%"], c: 1, t: 30, e: "BER -8 indica sinal muito superior a -5."},
             {q: "O que é BER?", o: ["Erro de transmissão", "Erro de modulação", "Taxa de erro de bit", "Nível de sinal"], c: 2, t: 15, e: "Bit Error Rate: integridade da transmissão digital."}
         ];
-
+        
         let cur = 0, score = 0, timer, timeLeft, pName = "";
+        let isUserInTop5 = false;
 
-        // INICIAR
         document.getElementById('btn-iniciar').onclick = () => {
-            pName = document.getElementById('p-name').value;
+            pName = document.getElementById('p-name').value.trim();
             if(!pName) return alert("INSIRA SEU NOME PARA CERTIFICAÇÃO");
             document.getElementById('setup').classList.add('hidden');
             document.getElementById('quiz').classList.remove('hidden');
@@ -161,11 +208,9 @@
             if(cur >= QUESTIONS.length) return finish();
             const q = QUESTIONS[cur];
             timeLeft = q.t;
-            
-            document.getElementById('q-info').innerText = `DESAFIO ${cur+1}/${QUESTIONS.length}`;
+            document.getElementById('q-info').innerText = `Questão ${cur+1}/${QUESTIONS.length}`;
             document.getElementById('q-text').innerText = q.q;
             document.getElementById('explanation').classList.add('hidden');
-            
             const box = document.getElementById('opts');
             box.innerHTML = "";
             q.o.forEach((opt, i) => {
@@ -196,50 +241,59 @@
             const correctIdx = QUESTIONS[cur].c;
             const btns = document.querySelectorAll('.btn');
             btns.forEach(el => el.style.pointerEvents = "none");
-
             if(idx === correctIdx) {
                 if(b) b.classList.add('correct');
                 document.getElementById('snd-correct').play();
                 score += (100 + (timeLeft * 10));
-                confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+                confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
             } else {
                 if(b) b.classList.add('wrong');
                 document.getElementById('snd-wrong').play();
                 btns[correctIdx].classList.add('correct');
             }
-
             const exp = document.getElementById('explanation');
             exp.innerText = QUESTIONS[cur].e;
             exp.classList.remove('hidden');
-
             cur++;
-            setTimeout(loadQ, 3500);
+            setTimeout(loadQ, 3000);
         }
 
         async function finish() {
             document.getElementById('quiz').classList.add('hidden');
             document.getElementById('result').classList.remove('hidden');
+            document.getElementById('final-msg').innerText = "Exame Finalizado!";
+            document.getElementById('badge-msg').innerText = `${pName}: ${score} Pontos`;
             
-            let badge = "ESPECIALISTA JÚNIOR";
-            if(score > 2500) badge = "ESPECIALISTA HFC PRO";
-            if(score > 3500) badge = "MESTRE DA REDE PROCISA";
-            
-            document.getElementById('final-msg').innerText = pName;
-            document.getElementById('badge-msg').innerText = badge;
+            // Grava no Firebase
             await setDoc(doc(db, "ranking", pName + "_" + Date.now()), { name: pName, score: score });
+            
+            // O Snapshot do ranking cuidará de verificar a posição do usuário
         }
 
-        const qRank = query(collection(db, "ranking"), orderBy("score", "desc"), limit(10));
+        // Snapshot limitado aos Top 5
+        const qRank = query(collection(db, "ranking"), orderBy("score", "desc"), limit(5));
         onSnapshot(qRank, (snap) => {
             const list = document.getElementById('ranking-list');
             list.innerHTML = "";
             let i = 1;
+            let foundMe = false;
+            
             snap.forEach((doc) => {
                 const d = doc.data();
-                const cls = i <= 3 ? 'top-rank' : '';
+                if(d.name === pName && d.score === score) foundMe = true;
+                const cls = i <= 1 ? 'top-rank' : '';
                 list.innerHTML += `<li class="${cls}"><span>${i}. ${d.name}</span> <b>${d.score}</b></li>`;
                 i++;
             });
+
+            // Exibe incentivo se o jogo terminou e não está no ranking
+            if (pName && document.getElementById('result').classList.contains('hidden') === false) {
+                if (!foundMe) {
+                    document.getElementById('incentive-msg').classList.remove('hidden');
+                } else {
+                    document.getElementById('incentive-msg').classList.add('hidden');
+                }
+            }
         });
     </script>
 </body>
