@@ -17,19 +17,19 @@
         .timer-fill { height: 100%; background: var(--claro-red); width: 100%; transition: 1s linear; }
         .explanation-box { background: #fff9c4; padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: #444; border-left: 5px solid #fbc02d; text-align: left; line-height: 1.4; }
         .hidden { display: none !important; }
-        #ranking-list { list-style: none; padding: 0; text-align: left; }
-        #ranking-list li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; background: #fdfdfd; }
         input[type="text"] { width: 85%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
+        #ranking-list { list-style: none; padding: 0; text-align: left; }
+        #ranking-list li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
     <div id="setup" class="card">
         <img src="logo-procisa.png" class="logo-procisa" alt="Treinamento PROCISA">
-        <h2>Preparatório para Certificação Claro HFC</h2>
-        <p>Avaliação Final - Selecione a Alternativa Correta</p>
+        <h2>Preparatório para Certificação Claro HFC [cite: 2]</h2>
+        <p>Avaliação Final - Selecione a Alternativa Correta [cite: 3]</p>
         <input type="text" id="p-name" placeholder="Digite seu Nome Completo">
-        <button id="start-btn" class="btn" style="background: var(--claro-red); color: #fff; border: none; text-align: center; font-size: 18px;">INICIAR AVALIAÇÃO</button>
+        <button id="btn-iniciar" class="btn" style="background: var(--claro-red); color: #fff; border: none; text-align: center; font-size: 18px;">INICIAR AVALIAÇÃO</button>
     </div>
 
     <div id="quiz" class="card hidden">
@@ -65,20 +65,141 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // BANCO DE DADOS INTEGRAL DAS QUESTÕES DO ARQUIVO DOCX
         const QUESTIONS = [
-            {q: "Nos casos onde os níveis de sinal não forem suficientes para atender todos os pontos, é essencial:", o: ["Conferir se não existe problemas com os níveis da Rede Externa e MDU.", "Instruir o cliente para que ele saiba de possíveis problemas em alguns pontos.", "Relatar os níveis inadequados em Ordem de Serviço sem orientar o cliente.", "Realizar a instalação e informar ao Cliente que ele pode ligar na CRN caso tenha problemas."], c: 0, t: 30, e: "É fundamental garantir que a rede externa esteja operacional antes de apontar problemas internos."},
-            {q: "Qual o procedimento correto para o técnico finalizar o preenchimento da O.S. DIGITAL?", o: ["O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “adotar e assinar”", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “concluir”", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “avançar”", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “assinar ordem de serviço”"], c: 0, t: 25, e: "O botão 'adotar e assinar' é o passo final para validação da OS Digital."},
-            {q: "Com o gravador na Nuvem, os conteúdos gravados ficarão disponíveis pelo período de:", o: ["90 dias", "180 dias", "45 dias", "30 dias"], c: 3, t: 20, e: "A regra de retenção para gravações em nuvem é de 30 dias."},
-            {q: "Para o MAC 0023754F1608 na Baixa URA, o caractere hexadecimal (F) exige digitar:", o: ["*6", "*06", "6", "#6"], c: 1, t: 20, e: "Na URA, o código *06 substitui a letra F nos endereços MAC."},
-            {q: "Sobre o teste de TRACERT, é correto afirmar que:", o: ["Configura o Firewall", "É um teste de rota para verificar lentidão, bloqueio ou gargalo ao site solicitado", "Mede apenas a velocidade contratada", "Busca vírus no computador"], c: 1, t: 30, e: "O comando rastreia os saltos da rede para identificar onde o pacote é retido."},
-            {q: "Dentre as opções, qual representa baixo potencial de barreira para o sinal de Wi-Fi?", o: ["Madeira e Gesso", "Água e Árvores", "Concreto e Metal", "Micro-ondas"], c: 0, t: 20, e: "Materiais porosos como gesso facilitam a passagem das ondas de 2.4 e 5GHz."},
-            {q: "Dos padrões Wi-Fi abaixo, qual nos proporciona a maior velocidade da taxa de transmissão?", o: ["n", "b", "g", "ac"], c: 3, t: 20, e: "O padrão 802.11ac é superior em throughput aos padrões anteriores."},
-            {q: "Qual site oficial devemos acessar para verificar a velocidade do CLARO Vírtua?", o: ["www.brasilbandalarga.com.br", "www.minhaconexao.com.br", "www.rjnet.com.br", "www.claro.com.br"], c: 0, t: 20, e: "Este é o site oficial para testes de velocidade auditados."},
-            {q: "Sobre o #NET WIFI, as afirmações: (1) Rede de Spots em ruas/aeroportos; (2) Exibida nos EMTA’s 3.0:", o: ["As afirmações 1 e 2 estão corretas", "Apenas a afirmação 1 está correta", "Apenas a afirmação 2 está correta", "Ambas estão incorretas"], c: 0, t: 25, e: "O #NET WIFI é uma rede pública compartilhada por equipamentos compatíveis."},
-            {q: "O que é PIP (Picture in Picture)?", o: ["Visualizar outro canal em janela pequena enquanto assiste à tela principal", "Transferir arquivos entre clientes", "Visualizar fotos do celular", "Pagar fatura pelo controle"], c: 0, t: 25, e: "Permite acompanhar dois canais ao mesmo tempo em decoders compatíveis."},
-            {q: "Dos padrões de criptografia WiFi listados abaixo, qual é considerado o mais seguro?", o: ["RADIUS PSK", "WEP", "WPA + TKIP", "WPA2 + AES"], c: 3, t: 20, e: "WPA2-AES é o padrão de segurança mais robusto atualmente."},
-            {q: "O que é AutoHit?", o: ["Envio automático de HIT pelo controle em equipamentos HD e HDMAX", "Reset total do decoder", "Busca automática de canais SD", "Sinal de Wi-Fi"], c: 0, t: 25, e: "Facilita a ativação de produtos diretamente pelo assinante."},
-            {q: "Qual o procedimento correto para realizar a validação de retorno?", o: ["Canal 262 + 8291", "Canal 262 + Menu + 8291", "Canal 262 + Menu + Tecla Azul + 8291", "Canal 262 + Tecla Azul + 8291 + Preenchimento da O.S. e Contrato"], c: 3, t: 30, e: "A sequência Tecla Azul + 8291 abre o menu técnico de retorno."},
-            {q: "Qual o comando utilizado para forçar a renovação do IPV4 ou IPV6?", o: ["CHKDSK", "IPCONFIG /RELEASE", "IPCONFIG /RENEW", "IPCONFIG /ALL"], c: 2, t: 20, e: "O parâmetro /renew solicita ao DHCP um novo endereçamento."},
-            {q: "Qual canal usamos para verificação dos endereçáveis (CA ID e SmartCard)?", o: ["250", "252", "270", "272"], c: 2, t: 20, e: "O canal 270 exibe os dados técnicos necessários para a baixa."},
-            {q: "Para um Decoder HD/HDMAX ser considerado On-line, o IP deve iniciar em:", o: ["10.x.x.x", "168.x.x.x", "189.x.x.x", "192.x.x.x"], c: 0, t: 25, e: "A rede de ger
+            {q: "Nos casos onde os níveis de sinal não forem suficientes para atender todos os pontos, é essencial:", o: ["Conferir se não existe problemas com os níveis da Rede Externa e MDU.", "Instruir o cliente para que ele saiba de possíveis problemas em alguns pontos.", "Relatar os níveis inadequados em Ordem de Serviço sem orientar o cliente.", "Realizar a instalação e informar ao Cliente que ele pode ligar na CRN caso tenha problemas."], c: 0, t: 30, e: "É essencial conferir se não existe problemas com os níveis da Rede Externa e MDU[cite: 5]."},
+            {q: "Qual o procedimento correto para o técnico finalizar o preenchimento da O.S. DIGITAL?", o: ["O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão 'adotar e assinar'", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão 'concluir'", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão 'avançar'", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão 'assinar ordem de serviço'"], c: 0, t: 30, e: "O técnico deve finalizar clicando no botão 'adotar e assinar'[cite: 10]."},
+            {q: "Com o gravador na Nuvem, os conteúdos gravados ficarão disponíveis pelo período de:", o: ["90 dias", "180 dias", "45 dias", "30 dias"], c: 3, t: 20, e: "Conteúdos gravados na nuvem ficam disponíveis por 30 dias[cite: 18]."},
+            {q: "Conforme procedimento de Baixa na URA, para o MAC 0023754F1608, é necessário digitar para o caractere hexadecimal (F):", o: ["*6", "*06", "6", "#6"], c: 1, t: 20, e: "Para o caractere hexadecimal (F) é necessário digitar *06[cite: 21]."},
+            {q: "Sobre o teste de TRACERT, é correto afirmar que:", o: ["Configura o Firewall", "É um teste de rota para verificar lentidão, bloqueio ou gargalo ao site solicitado", "Mede a velocidade de navegação", "Busca vírus no computador"], c: 1, t: 35, e: "É um teste de rota para verificar lentidão, bloqueio ou gargalo[cite: 26]."},
+            {q: "Dentre as opções abaixo, qual representa baixo potencial de barreira/interferência para o sinal de Wi-Fi?", o: ["Madeira e Gesso", "Água e Árvores", "Concreto e Metal", "Micro-ondas"], c: 0, t: 25, e: "Madeira e Gesso representam baixo potencial de barreira[cite: 30]."},
+            {q: "Dos padrões de redes Wi-Fi abaixo, qual nos proporciona a maior velocidade da taxa de transmissão?", o: ["n", "b", "g", "ac"], c: 3, t: 20, e: "O padrão 'ac' nos proporciona a maior velocidade de transmissão[cite: 38]."},
+            {q: "Qual site devemos acessar para verificar a velocidade de conexão do CLARO Vírtua?", o: ["www.brasilbandalarga.com.br", "www.minhaconexao.com.br", "www.rjnet.com.br", "www.testesuavelocidade.com.br"], c: 0, t: 25, e: "O site oficial para verificação é www.brasilbandalarga.com.br[cite: 40]."},
+            {q: "Sobre o #NET WIFI, podemos afirmar que a rede de Spots em ruas e a rede exibida nos EMTA's 3.0:", o: ["As afirmações 1 e 2 estão corretas", "Apenas a afirmação 1 está correta", "Apenas a afirmação 2 está correta", "Ambas estão incorretas"], c: 0, t: 30, e: "Ambas as afirmações sobre #NET WIFI estão corretas[cite: 47]."},
+            {q: "O que é PIP:", o: ["Recurso para visualizar outro canal através de uma pequena janela ao mesmo tempo que assiste ao programa principal", "Transferência de arquivos entre clientes", "Visualização de fotos no celular", "Pagamento de faturas pelo controle"], c: 0, t: 35, e: "PIP possibilita visualizar outro canal através de uma pequena janela[cite: 52]."},
+            {q: "Dos padrões de criptografia WiFi listados abaixo, qual é considerado o mais seguro?", o: ["RADIUS PSK", "WEP", "WPA + TKIP", "WPA2 + AES"], c: 3, t: 25, e: "WPA2+AES é considerado o padrão mais seguro[cite: 60]."},
+            {q: "O que é AutoHit?", o: ["Envio automático de HIT pelo controle remoto em equipamentos HD e HDMAX", "Envio automático de HIT em equipamentos SD", "Reset do decodificador", "Nenhuma das anteriores"], c: 0, t: 30, e: "AutoHit permite o envio automático de HIT em equipamentos HD e HDMAX[cite: 62]."},
+            {q: "Qual o procedimento correto para realizar a validação de retorno?", o: ["Canal 262 + 8291", "Canal 262 + Menu + 8291", "Canal 262 + Menu + Tecla Azul + 8291", "Canal 262 + Tecla Azul + 8291 + Preenchimento da O.S. e Contrato"], c: 3, t: 35, e: "A validação é feita via Canal 262 + Tecla Azul + 8291 + OS/Contrato[cite: 76]."},
+            {q: "Qual o comando utilizado para renovação do IP dinâmico via prompt?", o: ["CHKDSK", "IPCONFIG /RELEASE", "IPCONFIG /RENEW", "IPCONFIG /ALL"], c: 2, t: 25, e: "O comando utilizado para renovação do IP é IPCONFIG /RENEW[cite: 81]."},
+            {q: "Qual canal usamos para verificação dos endereçáveis (CA ID e SmartCard) para realizar a baixa?", o: ["250", "252", "270", "272"], c: 2, t: 20, e: "O canal utilizado para verificação é o 270[cite: 86]."},
+            {q: "Para considerarmos um Decoder HD/HDMAX ON-line, o IP deve iniciar em:", o: ["10.xxx.xxx.xxx", "168.xxx.xxx.xxx", "189.xxx.xxx.xxx", "192.xxx.xxx.xxx"], c: 0, t: 30, e: "O IP do decoder ON-line deve iniciar em 10.xxx.xxx.xxx[cite: 89]."},
+            {q: "Dentre as alternativas abaixo, qual delas apresenta uma melhor qualidade de sinal?", o: ["BER 1.0 E-05", "BER 1.0 E-07", "BER 2.0 E-08", "BER 9 E-06"], c: 2, t: 35, e: "O valor BER 2.0 E-08 representa a melhor qualidade dentre as opções[cite: 96]."},
+            {q: "Se o teste de download apresenta uma taxa de transferência de 7,5MBps, qual a velocidade contratada?", o: ["100 Mbps", "12 Mbps", "120 Mbps", "60 Mbps"], c: 3, t: 35, e: "A taxa de 7,5MBps equivale a uma velocidade de 60 Mbps[cite: 107]."},
+            {q: "Quais são os serviços inteligentes do CLARO FONE?", o: ["Bina, Conferencia a 3, Chamada em Espera, Siga-me e Bloqueio", "Conferência, PME, Portabilidade e Espera", "4 Extensões, Mesh e Bina", "Bloqueio e Identificador"], c: 0, t: 35, e: "Os serviços incluem Bina, Conferência a 3, Espera, Siga-me e Bloqueio[cite: 109]."},
+            {q: "Quais os movimentos que o sinal faz ao entrar no DC de 6?", o: ["Inserção / Derivação / Isolação", "Derivação / Isolação / Inserção", "Inserção / Inserção / Derivação", "Isolação / Isolação / Derivação"], c: 0, t: 30, e: "Os movimentos são Inserção, Derivação e Isolação[cite: 114]."},
+            {q: "Um IP Nateado começa com qual número?", o: ["102.168.2.34", "100.981.5.23", "255.255.255.0", "192.168.0.1"], c: 1, t: 20, e: "Um IP Nateado inicia com 100.xxx[cite: 120]."},
+            {q: "Ao identificar falta de disponibilidade de HP no TAP ao iniciar uma instalação, o que fazer?", o: ["Usar divisor", "Não realizar a instalação, baixar como #205 e abrir ocorrência PE1", "Baixar como #203", "Baixar como #409"], c: 1, t: 40, e: "Deve-se baixar com código #205 e abrir a ocorrência PE1[cite: 136]."},
+            {q: "Qual a intensidade de sinal wifi ideal medida pelo Analyzer?", o: ["-10 a -70 dBm", "40dbmv a 52dbmv", "-12 a +12 dbmv", "Sempre acima de zero"], c: 0, t: 25, e: "A intensidade da conexão deve ser de -10 a -70 dBm[cite: 140]."},
+            {q: "Qual a inclinação correta da furadeira ao furar de dentro para fora?", o: ["15° para baixo", "15° para cima", "Ângulo reto", "45° para cima"], c: 0, t: 25, e: "Deve-se inclinar a furadeira 15° para baixo[cite: 145]."},
+            {q: "O que é downstream?", o: ["Sinal que o CMTS envia para o Emta", "Sinal que o Emta envia para o CMTS", "Sinal do medidor", "Sinal de retorno"], c: 0, t: 20, e: "É o sinal que o CMTS envia para o Emta[cite: 150]."},
+            {q: "Referência 15 dbmv (CA) e 12 dbmv (CB). Quais níveis na saída TAP do DC 06?", o: ["CA: 12,5 / CB: 9,5", "CA: 13,5 / CB: 10,5", "CA: 15 / CB: 12", "CA: 09 / CB: 06"], c: 3, t: 40, e: "Os níveis serão CA: 09 dBmV e CB: 06 dBmV[cite: 158]."},
+            {q: "Referência 19 dBmV em 550 MHz. Saídas OUT e TAP no DC 12?", o: ["16 / 7", "17 / 8", "18 / 7", "19 / 8"], c: 2, t: 40, e: "O sinal nas saídas será 18 dbmv (OUT) e 7 dbmv (TAP)[cite: 162]."},
+            {q: "O que é DOCSIS?", o: ["Padrão para interface de transmissão de dados via cabo", "Recepção de imagem via cabo", "Tecnologia acima de 50 mega", "Tecnologia de decodificadores"], c: 0, t: 20, e: "É o padrão para interface de transmissão de dados via cabo[cite: 165]."},
+            {q: "O que acontece ao amassar o cabo no momento da instalação?", o: ["Aumenta blindagem", "Altera a impedância característica do cabo", "Inverte o tilt", "Satura frequência"], c: 1, t: 25, e: "Ocorre uma alteração na impedância característica do cabo[cite: 171]."},
+            {q: "Informações indispensáveis para um atendimento de excelência?", o: ["Telefone do técnico", "NOW, instrução do controle e App MINHA CLARO RESIDENCIAL", "Telefone do coordenador", "Nenhuma"], c: 1, t: 30, e: "Essencial apresentar o NOW, controle e App MINHA CLARO[cite: 177]."},
+            {q: "Local de instalação do Emta para cobertura Wi-Fi?", o: ["Cozinha", "Sótão", "Lugar onde o sinal fique -90dbm", "Cômodo central com sinal entre -10 a -70dbm (80% da casa)"], c: 3, t: 40, e: "Deve-se buscar o cômodo central com cobertura -10 a -70dbm[cite: 185]."},
+            {q: "O que é PIP e em quais decoders está disponível?", o: ["Recurso para visualizar outro canal em janela pequena (HDNG e 4K)", "Recurso para todos os decoders HD", "Recurso do canal 270", "Alerta de sinal"], c: 0, t: 35, e: "Recurso para visualizar outro canal em janela pequena (HDNG e 4K)[cite: 188]."},
+            {q: "Qual rede Wi-Fi é adequada para TV 4K Ultra HD?", o: ["2.4 GHz (menor interferência)", "2.4 GHz (maior banda)", "5 GHz (mais interferência)", "5 GHz (menos interferência e maior banda)"], c: 3, t: 30, e: "A rede 5 GHZ sofre menos interferência e possui maior banda[cite: 198]."},
+            {q: "O que é REPLAY TV?", o: ["Gravar títulos do NOW", "Assistir novamente toda a programação", "Replay de jogos e gols", "Recomeçar evento atual ou acessar retroativos até 7 dias"], c: 3, t: 35, e: "Permite recomeçar o evento atual ou acessar retroativos até 7 dias[cite: 203]."},
+            {q: "Sobre a função AUTODESLIGAR nos HDNGs:", o: ["Desabilitar para evitar visitas", "Não desabilitar para manter atualizado", "Já vem desabilitada", "Já vem habilitada"], c: 1, t: 30, e: "A função não deve ser desabilitada para manter o software atualizado[cite: 207]."},
+            {q: "Melhor qualidade de sinal Digital (Diagnóstico)?", o: ["PS 100%, QS 100% e BER -5", "PS 60%, QS 100% e BER -8", "PS 90%, QS 70%", "PS 95%"], c: 1, t: 30, e: "A melhor qualidade é representada por PS 60%, QS 100% e BER -8[cite: 213]."},
+            {q: "Quais recursos teremos em um decoder com Update ID 1?", o: ["HD, Gravação e NOW", "Alta definição e Now (VOD)", "HD e serviço de gravação", "Somente HD"], c: 1, t: 25, e: "Decoder com Update ID 1 possui Alta definição e Now[cite: 218]."},
+            {q: "Para evitar lentidão por congestionamento Wi-Fi, devemos:", o: ["Usar sempre canal 11", "Potência -40dBm", "Cômodo central", "Canal Automático e orientar boot no Emta"], c: 3, t: 35, e: "Deve-se deixar em automático e orientar boot no Emta[cite: 225]."},
+            {q: "O que é BER?", o: ["Erro de transmissão", "Erro de recepção", "Erro de modulação", "Taxa de erro de bit"], c: 3, t: 15, e: "BER significa Taxa de erro de bit[cite: 231]."}
+        ];
+
+        let cur = 0, score = 0, timer, timeLeft, pName = "";
+
+        // FUNÇÕES GLOBAIS
+        function loadQ() {
+            if(cur >= QUESTIONS.length) return finish();
+            const q = QUESTIONS[cur];
+            timeLeft = q.t;
+            document.getElementById('q-info').innerText = `Questão ${cur+1} de ${QUESTIONS.length}`;
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('explanation').classList.add('hidden');
+            const box = document.getElementById('opts');
+            box.innerHTML = "";
+            q.o.forEach((opt, i) => {
+                const b = document.createElement('button');
+                b.className = "btn";
+                b.innerText = opt;
+                b.onclick = () => select(i, b);
+                box.appendChild(b);
+            });
+            runTimer();
+        }
+
+        function runTimer() {
+            const f = document.getElementById('t-fill');
+            f.style.width = "100%";
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                f.style.width = (timeLeft/QUESTIONS[cur].t*100) + "%";
+                if(timeLeft <= 0) select(-1, null);
+            }, 1000);
+        }
+
+        function select(idx, clickedBtn) {
+            clearInterval(timer);
+            const correctIdx = QUESTIONS[cur].c;
+            const btns = document.querySelectorAll('.btn');
+            btns.forEach(b => b.style.pointerEvents = "none");
+
+            if(idx === correctIdx) {
+                if(clickedBtn) clickedBtn.classList.add('correct');
+                score += (100 + (timeLeft * 10));
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            } else {
+                if(clickedBtn) clickedBtn.classList.add('wrong');
+                btns[correctIdx].classList.add('correct'); // DESTAQUE VERDE NA CORRETA
+            }
+
+            const expBox = document.getElementById('explanation');
+            expBox.innerText = `💡 EXPLICAÇÃO: ${QUESTIONS[cur].e}`;
+            expBox.classList.remove('hidden');
+
+            cur++;
+            setTimeout(loadQ, 4500);
+        }
+
+        async function finish() {
+            document.getElementById('quiz').classList.add('hidden');
+            document.getElementById('result').classList.remove('hidden');
+            document.getElementById('final-msg').innerText = `${pName}, sua pontuação: ${score} pts!`;
+            await setDoc(doc(db, "ranking", pName + "_" + Date.now()), { name: pName, score: score });
+        }
+
+        // VINCULANDO O BOTÃO AO SCRIPT (FORA DO MÓDULO NÃO FUNCIONA)
+        document.getElementById('btn-iniciar').onclick = function() {
+            pName = document.getElementById('p-name').value;
+            if(!pName) return alert("Por favor, digite seu nome completo!");
+            document.getElementById('setup').classList.add('hidden');
+            document.getElementById('quiz').classList.remove('hidden');
+            loadQ();
+        };
+
+        // RANKING
+        const qRank = query(collection(db, "ranking"), orderBy("score", "desc"), limit(10));
+        onSnapshot(qRank, (snap) => {
+            const list = document.getElementById('ranking-list');
+            list.innerHTML = "";
+            snap.forEach((doc) => {
+                const d = doc.data();
+                list.innerHTML += `<li><span>${d.name}</span> <b>${d.score} pts</b></li>`;
+            });
+        });
+
+        // RESET
+        window.resetRanking = async () => {
+            const pass = prompt("Senha:");
+            if(pass === "admin123") {
+                const querySnapshot = await getDocs(collection(db, "ranking"));
+                querySnapshot.forEach(async (d) => { await deleteDoc(doc(db, "ranking", d.id)); });
+                alert("Ranking reiniciado!");
+            }
+        };
+    </script>
+</body>
+</html>
