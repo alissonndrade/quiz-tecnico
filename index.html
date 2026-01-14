@@ -19,7 +19,6 @@
         .hidden { display: none !important; }
         #ranking-list { list-style: none; padding: 0; text-align: left; }
         #ranking-list li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; background: #fdfdfd; }
-        h2 { color: var(--procisa-blue); margin-top: 5px; }
         input[type="text"] { width: 85%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
     </style>
 </head>
@@ -28,15 +27,15 @@
     <div id="setup" class="card">
         <img src="logo-procisa.png" class="logo-procisa" alt="Treinamento PROCISA">
         <h2>Preparatório para Certificação Claro HFC</h2>
-        <p>Avaliação de Conhecimentos Técnicos</p>
+        <p>Avaliação Final - Selecione a Alternativa Correta</p>
         <input type="text" id="p-name" placeholder="Digite seu Nome Completo">
-        <button class="btn" style="background: var(--claro-red); color: #fff; border: none; text-align: center; font-size: 18px;" onclick="window.init()">INICIAR AVALIAÇÃO</button>
+        <button id="start-btn" class="btn" style="background: var(--claro-red); color: #fff; border: none; text-align: center; font-size: 18px;">INICIAR AVALIAÇÃO</button>
     </div>
 
     <div id="quiz" class="card hidden">
         <div id="q-info" style="font-weight: bold; color: #888;"></div>
         <div class="timer-bar"><div id="t-fill" class="timer-fill"></div></div>
-        <h3 id="q-text" style="color: #333; text-align: left; line-height: 1.5;"></h3>
+        <h3 id="q-text" style="color: #333; text-align: left; line-height: 1.5; margin-bottom: 25px;"></h3>
         <div id="opts"></div>
         <div id="explanation" class="explanation-box hidden"></div>
     </div>
@@ -47,8 +46,7 @@
         <hr>
         <h4>🏆 RANKING DOS TÉCNICOS</h4>
         <ul id="ranking-list"></ul>
-        <button class="btn" style="text-align: center;" onclick="location.reload()">REFAZER TESTE</button>
-        <button onclick="window.resetRanking()" style="font-size: 10px; color: #ccc; background: none; border: none; margin-top: 50px; cursor: pointer;">Limpar Ranking</button>
+        <button class="btn" style="text-align: center;" onclick="location.reload()">REFAZER AVALIAÇÃO</button>
     </div>
 
     <script type="module">
@@ -58,4 +56,29 @@
         const firebaseConfig = {
             apiKey: "AIzaSyBq8wjHbbLGh5mlhujzX2b_-FJX4e2AYzk",
             authDomain: "quiz-telecom-claro.firebaseapp.com",
-            projectId: "
+            projectId: "quiz-telecom-claro",
+            storageBucket: "quiz-telecom-claro.firebasestorage.app",
+            messagingSenderId: "64474953672",
+            appId: "1:64474953672:web:58520fea1375adf49532fd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const QUESTIONS = [
+            {q: "Nos casos onde os níveis de sinal não forem suficientes para atender todos os pontos, é essencial:", o: ["Conferir se não existe problemas com os níveis da Rede Externa e MDU.", "Instruir o cliente para que ele saiba de possíveis problemas em alguns pontos.", "Relatar os níveis inadequados em Ordem de Serviço sem orientar o cliente.", "Realizar a instalação e informar ao Cliente que ele pode ligar na CRN caso tenha problemas."], c: 0, t: 30, e: "É fundamental garantir que a rede externa esteja operacional antes de apontar problemas internos."},
+            {q: "Qual o procedimento correto para o técnico finalizar o preenchimento da O.S. DIGITAL?", o: ["O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “adotar e assinar”", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “concluir”", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “avançar”", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “assinar ordem de serviço”"], c: 0, t: 25, e: "O botão 'adotar e assinar' é o passo final para validação da OS Digital."},
+            {q: "Com o gravador na Nuvem, os conteúdos gravados ficarão disponíveis pelo período de:", o: ["90 dias", "180 dias", "45 dias", "30 dias"], c: 3, t: 20, e: "A regra de retenção para gravações em nuvem é de 30 dias."},
+            {q: "Para o MAC 0023754F1608 na Baixa URA, o caractere hexadecimal (F) exige digitar:", o: ["*6", "*06", "6", "#6"], c: 1, t: 20, e: "Na URA, o código *06 substitui a letra F nos endereços MAC."},
+            {q: "Sobre o teste de TRACERT, é correto afirmar que:", o: ["Configura o Firewall", "É um teste de rota para verificar lentidão, bloqueio ou gargalo ao site solicitado", "Mede apenas a velocidade contratada", "Busca vírus no computador"], c: 1, t: 30, e: "O comando rastreia os saltos da rede para identificar onde o pacote é retido."},
+            {q: "Dentre as opções, qual representa baixo potencial de barreira para o sinal de Wi-Fi?", o: ["Madeira e Gesso", "Água e Árvores", "Concreto e Metal", "Micro-ondas"], c: 0, t: 20, e: "Materiais porosos como gesso facilitam a passagem das ondas de 2.4 e 5GHz."},
+            {q: "Dos padrões Wi-Fi abaixo, qual nos proporciona a maior velocidade da taxa de transmissão?", o: ["n", "b", "g", "ac"], c: 3, t: 20, e: "O padrão 802.11ac é superior em throughput aos padrões anteriores."},
+            {q: "Qual site oficial devemos acessar para verificar a velocidade do CLARO Vírtua?", o: ["www.brasilbandalarga.com.br", "www.minhaconexao.com.br", "www.rjnet.com.br", "www.claro.com.br"], c: 0, t: 20, e: "Este é o site oficial para testes de velocidade auditados."},
+            {q: "Sobre o #NET WIFI, as afirmações: (1) Rede de Spots em ruas/aeroportos; (2) Exibida nos EMTA’s 3.0:", o: ["As afirmações 1 e 2 estão corretas", "Apenas a afirmação 1 está correta", "Apenas a afirmação 2 está correta", "Ambas estão incorretas"], c: 0, t: 25, e: "O #NET WIFI é uma rede pública compartilhada por equipamentos compatíveis."},
+            {q: "O que é PIP (Picture in Picture)?", o: ["Visualizar outro canal em janela pequena enquanto assiste à tela principal", "Transferir arquivos entre clientes", "Visualizar fotos do celular", "Pagar fatura pelo controle"], c: 0, t: 25, e: "Permite acompanhar dois canais ao mesmo tempo em decoders compatíveis."},
+            {q: "Dos padrões de criptografia WiFi listados abaixo, qual é considerado o mais seguro?", o: ["RADIUS PSK", "WEP", "WPA + TKIP", "WPA2 + AES"], c: 3, t: 20, e: "WPA2-AES é o padrão de segurança mais robusto atualmente."},
+            {q: "O que é AutoHit?", o: ["Envio automático de HIT pelo controle em equipamentos HD e HDMAX", "Reset total do decoder", "Busca automática de canais SD", "Sinal de Wi-Fi"], c: 0, t: 25, e: "Facilita a ativação de produtos diretamente pelo assinante."},
+            {q: "Qual o procedimento correto para realizar a validação de retorno?", o: ["Canal 262 + 8291", "Canal 262 + Menu + 8291", "Canal 262 + Menu + Tecla Azul + 8291", "Canal 262 + Tecla Azul + 8291 + Preenchimento da O.S. e Contrato"], c: 3, t: 30, e: "A sequência Tecla Azul + 8291 abre o menu técnico de retorno."},
+            {q: "Qual o comando utilizado para forçar a renovação do IPV4 ou IPV6?", o: ["CHKDSK", "IPCONFIG /RELEASE", "IPCONFIG /RENEW", "IPCONFIG /ALL"], c: 2, t: 20, e: "O parâmetro /renew solicita ao DHCP um novo endereçamento."},
+            {q: "Qual canal usamos para verificação dos endereçáveis (CA ID e SmartCard)?", o: ["250", "252", "270", "272"], c: 2, t: 20, e: "O canal 270 exibe os dados técnicos necessários para a baixa."},
+            {q: "Para um Decoder HD/HDMAX ser considerado On-line, o IP deve iniciar em:", o: ["10.x.x.x", "168.x.x.x", "189.x.x.x", "192.x.x.x"], c: 0, t: 25, e: "A rede de ger
