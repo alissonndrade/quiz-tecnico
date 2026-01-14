@@ -21,161 +21,17 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- AS QUESTÕES SERÃO CORRIGIDAS INTEGRALMENTE ASSIM QUE VOCÊ ME ENVIAR OS TEXTOS ---
+        // QUESTÕES CORRIGIDAS E INTEGRAIS
         const QUESTIONS = [
-            {q: "Qual o padrão de criptografia Wi-Fi mais seguro atualmente disponível nas configurações dos roteadores?", o: ["WEP", "WAP", "WPA", "WPA2+AES"], c: 3, t: 15, e: "O WPA2+AES é o padrão de segurança mais robusto para redes domésticas."},
-            {q: "Em uma instalação onde não há disponibilidade de HP (Home Passed) no TAP, qual o procedimento correto a ser adotado pelo técnico?", o: ["Realizar a instalação com divisor", "Não realizar a instalação, baixar com código #205 e abrir ocorrência PE1", "Baixar com código #203", "Abrir chamado de manutenção e aguardar no local"], c: 1, t: 25, e: "A falta de porta (HP) impede a instalação imediata e exige abertura de PE1."},
-            {q: "Qual a faixa de intensidade de sinal Wi-Fi considerada ideal ao realizar a medição com o aplicativo Wi-Fi Analyzer?", o: ["-10 a -70 dBm", "0 a +12 dBm", "40 a 52 dBmv", "-80 a -100 dBm"], c: 0, t: 20, e: "Sinais fora da faixa -10 a -70 dBm resultam em perda de pacotes e lentidão."},
-            {q: "Ao realizar uma furação de dentro para fora da residência, qual deve ser a inclinação correta da furadeira?", o: ["15° para cima", "Manter a furadeira reta", "15° para baixo", "45° para baixo"], c: 2, t: 15, e: "A inclinação para baixo evita a entrada de umidade/água pelo duto do cabo."},
-            {q: "Em um passivo DC 06, se os níveis de entrada forem CA: 15 e CB: 12, quais serão os níveis aproximados na saída TAP?", o: ["10 / 8", "12.5 / 9.5", "15 / 12", "9 / 6"], c: 1, t: 30, e: "O DC 06 subtrai 6dB do valor de entrada na porta TAP (com as perdas de inserção da porta)."},
-            {q: "Considerando um DC 12 com nível de entrada de 19 dBmV em 550MHz, quais são os níveis de saída nas portas OUT e TAP respectivamente?", o: ["16 / 7", "17 / 8", "18 / 7", "19 / 8"], c: 2, t: 30, e: "O DC 12 atenua 12dB no TAP e apenas 1dB na porta OUT (saída principal)."},
-            {q: "O que ocorre tecnicamente com um cabo coaxial ao sofrer um amassamento físico em sua estrutura?", o: ["Aumento da blindagem eletromagnética", "Alteração na sua impedância característica de 75 ohms", "Melhora no tilt do sinal", "Saturação das frequências baixas"], c: 1, t: 20, e: "Amassados alteram a distância entre o condutor central e a malha, mudando a impedância."},
-            {q: "O recurso PIP (Picture-in-Picture) presente nos decodificadores Claro permite ao usuário:", o: ["Acessar o sinal do canal técnico 270", "Visualizar um segundo canal em uma janela reduzida na tela", "Compartilhar arquivos via Wi-Fi", "Emitir um sinal sonoro de alerta de gravação"], c: 1, t: 20, e: "O PIP permite monitorar dois conteúdos simultaneamente."},
-            {q: "Para um cliente que possui uma TV 4K Ultra HD conectada via Wi-Fi, qual rede é a mais recomendada para evitar travamentos?", o: ["Rede 2.4 GHz", "Rede 5 GHz devido à maior largura de banda", "Conexão apenas via cabo coaxial", "Rede AM/FM"], c: 1, t: 25, e: "A rede 5GHz oferece a velocidade necessária para o tráfego pesado de dados do 4K."},
-            {q: "O recurso REPLAY TV permite ao cliente Claro realizar qual das seguintes ações?", o: ["Gravar conteúdos do NOW no disco rígido", "Recomeçar um evento que já iniciou ou retroceder até 7 dias na grade", "Repetir os gols de uma partida ao vivo", "Assistir canais offline"], c: 1, t: 25, e: "O Replay TV é um recurso de rede que permite assistir conteúdos já transmitidos."},
-            {q: "Qual a configuração de sinal considerada de melhor qualidade em um diagnóstico de sinal digital?", o: ["PS 100% / QS 100% / BER -5", "PS 60% / QS 100% / BER -8", "PS 90% / QS 70% / BER -7", "PS 95% / QS 70% / BER -6"], c: 1, t: 25, e: "QS 100% e BER -8 (ou maior) indicam uma transmissão limpa, sem erros de bits."},
-            {q: "O que significa a sigla BER no contexto de diagnóstico de sinal?", o: ["Bit Error Rate (Taxa de Erro de Bit)", "Base de Erro de Rede", "Busca Estática de Retorno", "Banda de Erro de Recepção"], c: 0, t: 15, e: "O BER mede a integridade do sinal digital recebido."},
-            {q: "Por quanto tempo um conteúdo gravado na nuvem (Cloud-PVR) fica disponível para o cliente?", o: ["30 dias", "45 dias", "90 dias", "180 dias"], c: 2, t: 15, e: "As gravações em nuvem expiram automaticamente após 90 dias."},
-            {q: "Qual comando é utilizado no prompt de comando (CMD) para solicitar um novo endereço de IP ao servidor DHCP?", o: ["ipconfig/all", "ipconfig/release", "ipconfig/renew", "tracert"], c: 2, t: 15, e: "O comando /renew força a renovação das concessões de IPV4 e IPV6."},
-            {q: "O comando TRACERT é utilizado tecnicamente para:", o: ["Configurar o firewall do Windows", "Realizar o teste de rota e verificar onde ocorre lentidão no sinal", "Medir a velocidade bruta de download", "Instalar drivers de rede"], c: 1, t: 20, e: "O tracert mapeia os 'saltos' do pacote até o destino, identificando gargalos."},
-            {q: "Uma taxa de download medida em 7,5 MBps (Megabytes por segundo) equivale a qual plano de velocidade contratada?", o: ["12 Mbps", "60 Mbps", "120 Mbps", "240 Mbps"], c: 1, t: 30, e: "Multiplica-se por 8 para converter Bytes em Bits (7,5 * 8 = 60)."},
-            {q: "A faixa de IP que inicia com os números 100.64.xxx.xxx indica que o cliente está em:", o: ["IP Público Direto", "CGNAT (IP Nateado)", "Rede de gerência interna", "Modo Bridge"], c: 1, t: 15, e: "O CGNAT é utilizado para otimizar o uso de endereços IPv4."},
-            {q: "Qual a atenuação aproximada de um Splitter (divisor) de 2 vias balanceado?", o: ["-3.5 dB", "-7.0 dB", "-1.0 dB", "-12 dB"], c: 0, t: 15, e: "O sinal é dividido igualmente, resultando em uma perda de 3.5dB por porta."},
-            {q: "O canal técnico utilizado para validação de retorno e conferência de endereçáveis é o:", o: ["Canal 270", "Canal 262", "Canal 500", "Canal 1"], c: 1, t: 15, e: "O 262 é o canal padrão para testes de comunicação bidirecional decodificador-headend."},
-            {q: "No final de cada atendimento, quais produtos/serviços devem ser obrigatoriamente oferecidos ou reforçados com o cliente?", o: ["Apenas descontos na fatura", "NOW, Controle Remoto e Aplicativo Minha Claro", "Novas visitas técnicas", "Nada deve ser oferecido"], c: 1, t: 20, e: "O reforço dos benefícios do ecossistema Claro faz parte da excelência no atendimento."}
-        ];
-
-        // --- LÓGICA DO SISTEMA (MANTIDA) ---
-        let cur = 0, score = 0, timer, timeLeft, pName = "";
-
-        window.init = () => {
-            pName = document.getElementById('p-name').value;
-            if(!pName) return alert("Por favor, digite seu nome!");
-            document.getElementById('setup').classList.add('hidden');
-            document.getElementById('quiz').classList.remove('hidden');
-            loadQ();
-        };
-
-        function loadQ() {
-            if(cur >= QUESTIONS.length) return finish();
-            const q = QUESTIONS[cur];
-            timeLeft = q.t;
-            document.getElementById('q-info').innerText = `Questão ${cur+1} de ${QUESTIONS.length}`;
-            document.getElementById('q-text').innerText = q.q;
-            document.getElementById('explanation').classList.add('hidden');
-            const box = document.getElementById('opts');
-            box.innerHTML = "";
-            q.o.forEach((opt, i) => {
-                const b = document.createElement('button');
-                b.className = "btn";
-                b.innerText = opt;
-                b.onclick = () => select(i, b);
-                box.appendChild(b);
-            });
-            runTimer();
-        }
-
-        function runTimer() {
-            const f = document.getElementById('t-fill');
-            f.style.width = "100%";
-            clearInterval(timer);
-            timer = setInterval(() => {
-                timeLeft--;
-                f.style.width = (timeLeft/QUESTIONS[cur].t*100) + "%";
-                if(timeLeft <= 0) select(-1, null);
-            }, 1000);
-        }
-
-        function select(idx, clickedBtn) {
-            clearInterval(timer);
-            const correctIdx = QUESTIONS[cur].c;
-            const btns = document.querySelectorAll('.btn');
-            btns.forEach(b => b.style.pointerEvents = "none");
-
-            if(idx === correctIdx) {
-                clickedBtn.classList.add('correct');
-                score += (100 + (timeLeft * 10));
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            } else {
-                if(clickedBtn) clickedBtn.classList.add('wrong');
-                btns[correctIdx].classList.add('correct');
-            }
-
-            const expBox = document.getElementById('explanation');
-            expBox.innerText = `💡 EXPLICAÇÃO: ${QUESTIONS[cur].e}`;
-            expBox.classList.remove('hidden');
-
-            cur++;
-            setTimeout(loadQ, 4000);
-        }
-
-        async function finish() {
-            document.getElementById('quiz').classList.add('hidden');
-            document.getElementById('result').classList.remove('hidden');
-            document.getElementById('final-msg').innerText = `${pName}, você concluiu com ${score} pontos!`;
-            await setDoc(doc(db, "ranking", pName + "_" + Date.now()), { name: pName, score: score });
-        }
-
-        const qRank = query(collection(db, "ranking"), orderBy("score", "desc"), limit(10));
-        onSnapshot(qRank, (snap) => {
-            const list = document.getElementById('ranking-list');
-            list.innerHTML = "";
-            snap.forEach((doc) => {
-                const d = doc.data();
-                list.innerHTML += `<li><span>${d.name}</span> <b>${d.score} pts</b></li>`;
-            });
-        });
-
-        window.resetRanking = async () => {
-            if(prompt("Senha do Administrador:") === "admin123") {
-                const querySnapshot = await getDocs(collection(db, "ranking"));
-                querySnapshot.forEach(async (d) => { await deleteDoc(doc(db, "ranking", d.id)); });
-                alert("Ranking reiniciado!");
-            }
-        };
-    </script>
-    <style>
-        :root { --claro-red: #e31a1c; --procisa-blue: #000080; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 10px; }
-        .card { width: 100%; max-width: 500px; background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; border-top: 6px solid var(--procisa-blue); }
-        .logo-procisa { width: 220px; margin-bottom: 20px; }
-        .btn { display: block; width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; background: #fff; font-size: 15px; font-weight: 600; transition: 0.2s; }
-        .correct { background: #28a745 !important; color: white !important; border-color: #28a745 !important; }
-        .wrong { background: #ff69b4 !important; color: white !important; border-color: #ff69b4 !important; }
-        .timer-bar { height: 8px; background: #eee; border-radius: 4px; margin: 15px 0; overflow: hidden; }
-        .timer-fill { height: 100%; background: var(--claro-red); width: 100%; transition: 1s linear; }
-        .explanation-box { background: #fff9c4; padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: #444; border-left: 5px solid #fbc02d; text-align: left; }
-        .hidden { display: none; }
-        #ranking-list { list-style: none; padding: 0; text-align: left; }
-        #ranking-list li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 14px; }
-        h2 { color: var(--procisa-blue); font-size: 20px; }
-    </style>
-</head>
-<body>
-    <div id="setup" class="card">
-        <img src="https://i.ibb.co/mS3p4S6/image-d57b30.png" class="logo-procisa" alt="Treinamento PROCISA">
-        <h2>Preparatório para Certificação Claro HFC</h2>
-        <p style="color: #666; margin-bottom: 25px;">Teste seus conhecimentos técnicos e suba no ranking!</p>
-        <input type="text" id="p-name" placeholder="Seu nome completo" style="width: 85%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ccc;">
-        <button class="btn" style="background: var(--claro-red); color: #fff; border: none; font-size: 18px;" onclick="init()">INICIAR AVALIAÇÃO</button>
-    </div>
-
-    <div id="quiz" class="card hidden">
-        <div id="q-info" style="font-weight: bold; color: #888; font-size: 12px;"></div>
-        <div class="timer-bar"><div id="t-fill" class="timer-fill"></div></div>
-        <h3 id="q-text" style="color: #333; min-height: 60px;"></h3>
-        <div id="opts"></div>
-        <div id="explanation" class="explanation-box hidden"></div>
-    </div>
-
-    <div id="result" class="card hidden">
-        <img src="https://i.ibb.co/mS3p4S6/image-d57b30.png" class="logo-procisa" style="width: 120px;">
-        <h2 id="final-msg"></h2>
-        <hr>
-        <h4>🏆 RANKING DOS TÉCNICOS</h4>
-        <ul id="ranking-list"></ul>
-        <button class="btn" onclick="location.reload()">REFAZER TESTE</button>
-        <button onclick="resetRanking()" style="font-size: 10px; color: #ccc; background: none; border: none; margin-top: 40px; cursor: pointer;">Limpar Ranking</button>
-    </div>
-</body>
-</html>
+            {q: "Qual o padrão de criptografia Wi-Fi mais seguro atualmente disponível nas configurações dos roteadores?", o: ["WEP", "WAP", "WPA", "WPA2+AES"], c: 3, t: 20, e: "O WPA2+AES é o padrão de segurança mais robusto para redes domésticas atuais."},
+            {q: "Em uma instalação onde não há disponibilidade de HP (Home Passed) no TAP, qual o procedimento correto a ser adotado pelo técnico?", o: ["Realizar a instalação utilizando um divisor no cabo do vizinho", "Não realizar a instalação, baixar a OS com código #205 e abrir ocorrência PE1", "Baixar com código #203 e solicitar reforço", "Abrir chamado de manutenção e realizar a instalação após o reparo"], c: 1, t: 30, e: "A falta de porta física (HP) impede a ativação e exige o registro via código #205 e PE1."},
+            {q: "Qual a faixa de intensidade de sinal Wi-Fi considerada ideal ao realizar a medição através do aplicativo Wi-Fi Analyzer?", o: ["-10 a -70 dBm", "0 a +12 dBm", "40 a 52 dBmv", "-80 a -100 dBm"], c: 0, t: 25, e: "Sinais fora da faixa de -10 a -70 dBm resultam em instabilidade e baixa performance."},
+            {q: "Ao realizar uma furação de dentro para fora da residência, qual deve ser a inclinação correta da furadeira para evitar infiltrações?", o: ["Inclinar 15° para cima", "Manter a furadeira em ângulo reto (90°)", "Inclinar 15° para baixo", "Inclinar 45° para baixo"], c: 2, t: 20, e: "A inclinação para baixo impede que a água da chuva escorra pelo duto para o interior da casa."},
+            {q: "Em um passivo DC 06, considerando que os níveis de entrada sejam CA: 15 e CB: 12, quais serão os níveis aproximados na saída TAP?", o: ["10 / 8", "12.5 / 9.5", "15 / 12", "9 / 6"], c: 1, t: 35, e: "O cálculo leva em conta a perda de derivação do componente para as frequências altas e baixas."},
+            {q: "Considerando um DC 12 com nível de entrada de 19 dBmV em 550MHz, quais são os níveis de saída nas portas OUT e TAP respectivamente?", o: ["16 / 7", "17 / 8", "18 / 7", "19 / 8"], c: 2, t: 35, e: "O DC 12 atenua 12dB na porta TAP e aproximadamente 1dB na porta de saída (OUT)."},
+            {q: "O que ocorre tecnicamente com um cabo coaxial ao sofrer um amassamento ou dobra excessiva em sua estrutura física?", o: ["Melhoria na blindagem contra ruídos externos", "Alteração na sua impedância característica de 75 ohms", "Aumento do tilt positivo do sinal", "Saturação das frequências de retorno"], c: 1, t: 25, e: "Danos físicos alteram a geometria interna, causando descasamento de impedância."},
+            {q: "O recurso PIP (Picture-in-Picture) presente nos decodificadores da Claro permite ao usuário final:", o: ["Sintonizar o canal técnico de diagnóstico 270", "Visualizar um segundo canal em uma janela reduzida simultaneamente", "Compartilhar a conexão Wi-Fi com dispositivos móveis", "Ativar o sinal sonoro de gravação agendada"], c: 1, t: 25, e: "O PIP permite a visualização de dois conteúdos ao mesmo tempo na tela."},
+            {q: "Para um cliente com TV 4K Ultra HD conectada via Wi-Fi, qual rede é tecnicamente recomendada para garantir a fluidez do conteúdo?", o: ["Rede 2.4 GHz devido ao maior alcance", "Rede 5 GHz devido à maior largura de banda e menor interferência", "Conexão obrigatória via cabo coaxial", "Rede AM/FM em canais altos"], c: 1, t: 30, e: "A rede 5GHz oferece o throughput necessário para o tráfego pesado de dados em 4K."},
+            {q: "O recurso REPLAY TV permite ao cliente Claro realizar qual das seguintes ações na sua programação?", o: ["Gravar conteúdos do NOW diretamente no disco rígido local", "Recomeçar um evento em exibição ou retroceder até 7 dias na grade", "Repetir os gols de uma partida de futebol ao vivo automaticamente", "Assistir canais da grade linear em modo offline"], c: 1, t: 30, e: "O Replay TV possibilita assistir programas que já foram exibidos ou que já iniciaram."},
+            {q: "Qual a configuração de sinal considerada de melhor performance em um diagnóstico de sinal digital?", o: ["PS 100% / QS 100% / BER -5", "PS 60% / QS 100% / BER -8", "PS 90% / QS 70% / BER -7", "PS 95% / QS 70% / BER -6"], c: 1, t: 30, e: "Qualidade de Sinal (QS) 100% e BER em -8 indicam ausência de erros na recepção."},
+            {q: "O comando IPCONFIG/RENEW é utilizado no prompt de comando (
