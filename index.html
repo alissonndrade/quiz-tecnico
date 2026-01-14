@@ -5,23 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificação Claro HFC - PROCISA</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
     <style>
         :root { --claro-red: #e31a1c; --procisa-blue: #000080; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 10px; margin: 0; }
-        .card { width: 100%; max-width: 550px; background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; border-top: 8px solid var(--procisa-blue); margin-top: 20px; }
+        .card { width: 100%; max-width: 650px; background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; border-top: 8px solid var(--procisa-blue); margin-top: 20px; }
         .logo-procisa { width: 280px; margin-bottom: 15px; height: auto; }
-        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; background: #fff; font-size: 16px; font-weight: 600; text-align: left; padding-left: 20px; transition: 0.2s; }
-        .btn:hover { background: #f9f9f9; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; background: #fff; font-size: 15px; font-weight: 500; text-align: left; padding-left: 20px; transition: 0.2s; line-height: 1.4; }
+        .btn:hover { background: #f9f9f9; border-color: var(--procisa-blue); }
         .correct { background: #28a745 !important; color: white !important; border-color: #28a745 !important; }
         .wrong { background: #ff69b4 !important; color: white !important; border-color: #ff69b4 !important; }
         .timer-bar { height: 8px; background: #eee; border-radius: 4px; margin: 15px 0; overflow: hidden; }
         .timer-fill { height: 100%; background: var(--claro-red); width: 100%; transition: 1s linear; }
-        .explanation-box { background: #fff9c4; padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: #444; border-left: 5px solid #fbc02d; text-align: left; line-height: 1.4; }
+        .explanation-box { background: #fff9c4; padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; color: #444; border-left: 5px solid #fbc02d; text-align: left; line-height: 1.4; font-weight: bold; }
         .hidden { display: none !important; }
         #ranking-list { list-style: none; padding: 0; text-align: left; }
         #ranking-list li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; background: #fdfdfd; }
-        h2 { color: var(--procisa-blue); margin-top: 5px; }
+        h2 { color: var(--procisa-blue); margin-top: 5px; font-size: 22px; }
         input[type="text"] { width: 85%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
     </style>
 </head>
@@ -30,8 +29,8 @@
     <div id="setup" class="card">
         <img src="logo-procisa.png" class="logo-procisa" alt="Treinamento PROCISA">
         <h2>Preparatório para Certificação Claro HFC</h2>
-        <p style="color: #666; margin-bottom: 25px;">Teste seus conhecimentos técnicos oficiais.</p>
-        <input type="text" id="p-name" placeholder="Seu nome completo">
+        <p style="color: #666; margin-bottom: 25px;">Avaliação Final - Selecione a Alternativa Correta</p>
+        <input type="text" id="p-name" placeholder="Digite seu Nome Completo">
         <button class="btn" style="background: var(--claro-red); color: #fff; border: none; text-align: center; font-size: 18px;" onclick="window.init()">INICIAR AVALIAÇÃO</button>
     </div>
 
@@ -47,10 +46,10 @@
         <img src="logo-procisa.png" style="width: 150px;">
         <h2 id="final-msg"></h2>
         <hr>
-        <h4>🏆 RANKING DOS MELHORES TÉCNICOS</h4>
+        <h4>🏆 RANKING DOS TÉCNICOS</h4>
         <ul id="ranking-list"></ul>
-        <button class="btn" style="text-align: center;" onclick="location.reload()">REFAZER TESTE</button>
-        <button onclick="window.resetRanking()" style="font-size: 10px; color: #ccc; background: none; border: none; margin-top: 50px; cursor: pointer;">Resetar Ranking</button>
+        <button class="btn" style="text-align: center;" onclick="location.reload()">REFAZER AVALIAÇÃO</button>
+        <button onclick="window.resetRanking()" style="font-size: 10px; color: #ccc; background: none; border: none; margin-top: 50px; cursor: pointer;">Limpar Ranking</button>
     </div>
 
     <script type="module">
@@ -69,29 +68,57 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // BANCO DE DADOS INTEGRAL DAS QUESTÕES REVISADAS
         const QUESTIONS = [
-            {q: "Qual o padrão de criptografia Wi-Fi mais seguro atualmente disponível nas configurações dos roteadores?", o: ["WEP", "WAP", "WPA", "WPA2+AES"], c: 3, t: 20, e: "O WPA2+AES é o padrão de segurança mais robusto para redes domésticas atuais."},
-            {q: "Em uma instalação onde não há disponibilidade de HP (Home Passed) no TAP, qual o procedimento correto a ser adotado pelo técnico?", o: ["Realizar a instalação utilizando um divisor no cabo do vizinho", "Não realizar a instalação, baixar a OS com código #205 e abrir ocorrência PE1", "Baixar com código #203 e solicitar reforço", "Abrir chamado de manutenção e realizar a instalação após o reparo"], c: 1, t: 30, e: "A falta de porta física (HP) impede a ativação e exige o registro via código #205 e PE1."},
-            {q: "Qual a faixa de intensidade de sinal Wi-Fi considerada ideal ao realizar a medição através do aplicativo Wi-Fi Analyzer?", o: ["-10 a -70 dBm", "0 a +12 dBm", "40 a 52 dBmv", "-80 a -100 dBm"], c: 0, t: 25, e: "Sinais fora da faixa de -10 a -70 dBm resultam em instabilidade e baixa performance."},
-            {q: "Ao realizar uma furação de dentro para fora da residência, qual deve ser a inclinação correta da furadeira para evitar infiltrações?", o: ["Inclinar 15° para cima", "Manter a furadeira em ângulo reto (90°)", "Inclinar 15° para baixo", "Inclinar 45° para baixo"], c: 2, t: 20, e: "A inclinação para baixo impede que a água da chuva escorra pelo duto para o interior da casa."},
-            {q: "Em um passivo DC 06, considerando que os níveis de entrada sejam CA: 15 e CB: 12, quais serão os níveis aproximados na saída TAP?", o: ["10 / 8", "12.5 / 9.5", "15 / 12", "9 / 6"], c: 1, t: 35, e: "O cálculo leva em conta a perda de derivação do componente para as frequências altas e baixas."},
-            {q: "Considerando um DC 12 com nível de entrada de 19 dBmV em 550MHz, quais são os níveis de saída nas portas OUT e TAP respectivamente?", o: ["16 / 7", "17 / 8", "18 / 7", "19 / 8"], c: 2, t: 35, e: "O DC 12 atenua 12dB na porta TAP e aproximadamente 1dB na porta de saída (OUT)."},
-            {q: "O que ocorre tecnicamente com um cabo coaxial ao sofrer um amassamento ou dobra excessiva em sua estrutura física?", o: ["Melhoria na blindagem contra ruídos externos", "Alteração na sua impedância característica de 75 ohms", "Aumento do tilt positivo do sinal", "Saturação das frequências de retorno"], c: 1, t: 25, e: "Danos físicos alteram a geometria interna, causando descasamento de impedância."},
-            {q: "O recurso PIP (Picture-in-Picture) presente nos decodificadores da Claro permite ao usuário final:", o: ["Sintonizar o canal técnico de diagnóstico 270", "Visualizar um segundo canal em uma janela reduzida simultaneamente", "Compartilhar a conexão Wi-Fi com dispositivos móveis", "Ativar o sinal sonoro de gravação agendada"], c: 1, t: 25, e: "O PIP permite a visualização de dois conteúdos ao mesmo tempo na tela."},
-            {q: "Para um cliente com TV 4K Ultra HD conectada via Wi-Fi, qual rede é tecnicamente recomendada para garantir a fluidez do conteúdo?", o: ["Rede 2.4 GHz devido ao maior alcance", "Rede 5 GHz devido à maior largura de banda e menor interferência", "Conexão obrigatória via cabo coaxial", "Rede AM/FM em canais altos"], c: 1, t: 30, e: "A rede 5GHz oferece o throughput necessário para o tráfego pesado de dados em 4K."},
-            {q: "O recurso REPLAY TV permite ao cliente Claro realizar qual das seguintes ações na sua programação?", o: ["Gravar conteúdos do NOW diretamente no disco rígido local", "Recomeçar um evento em exibição ou retroceder até 7 dias na grade", "Repetir os gols de uma partida de futebol ao vivo automaticamente", "Assistir canais da grade linear em modo offline"], c: 1, t: 30, e: "O Replay TV possibilita assistir programas que já foram exibidos ou que já iniciaram."},
-            {q: "Qual a configuração de sinal considerada de melhor performance em um diagnóstico de sinal digital?", o: ["PS 100% / QS 100% / BER -5", "PS 60% / QS 100% / BER -8", "PS 90% / QS 70% / BER -7", "PS 95% / QS 70% / BER -6"], c: 1, t: 30, e: "Qualidade de Sinal (QS) 100% e BER em -8 indicam ausência de erros na recepção."},
-            {q: "O comando IPCONFIG/RENEW é utilizado no prompt de comando (CMD) para qual finalidade técnica?", o: ["Verificar todos os endereços físicos da rede (MAC)", "Liberar o endereço de IP atual do adaptador", "Solicitar a renovação das concessões de endereços IP ao servidor DHCP", "Testar a rota de pacotes até um servidor externo"], c: 2, t: 25, e: "O /renew força a atualização do endereço IP junto ao roteador/servidor."},
-            {q: "Uma taxa de download medida em 7,5 MBps (Megabytes por segundo) corresponde a qual plano de velocidade contratada em Mbps?", o: ["12 Mbps", "60 Mbps", "120 Mbps", "240 Mbps"], c: 1, t: 35, e: "A conversão correta é multiplicar por 8 (1 Byte = 8 bits). 7.5 * 8 = 60."},
-            {q: "A faixa de endereçamento IP iniciada por 100.64.xxx.xxx indica tecnicamente que o cliente está navegando em:", o: ["Endereço de IP Público e fixo", "Carrier Grade NAT (CGNAT / IP Nateado)", "Rede de gerência restrita a decoders", "Modo de operação Bridge do modem"], c: 1, t: 20, e: "O CGNAT compartilha um IP público entre vários usuários através dessa faixa reservada."},
-            {q: "No encerramento de cada atendimento técnico, quais itens devem ser obrigatoriamente reforçados com o cliente?", o: ["Apenas a data da próxima visita preventiva", "Recursos do NOW, controle remoto e utilização do Aplicativo Minha Claro", "Sugestão de troca de plano para pacotes inferiores", "Nenhuma oferta adicional deve ser feita"], c: 1, t: 25, e: "Educar o cliente sobre o uso dos recursos (NOW/App) reduz rechamados e aumenta a satisfação."}
+            {q: "Nos casos onde os níveis de sinal não forem suficientes para atender todos os pontos, é essencial:", o: ["Conferir se não existe problemas com os níveis da Rede Externa e MDU.", "Instruir o cliente para que ele saiba de possíveis problemas em alguns pontos.", "Relatar os níveis inadequados em Ordem de Serviço sem orientar o cliente.", "Realizar a instalação e informar ao Cliente que ele pode ligar na CRN caso tenha problemas."], c: 0, t: 30},
+            {q: "Qual o procedimento correto para o técnico finalizar o preenchimento da O.S. DIGITAL? ( Questão Antiga! )", o: ["O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “adotar e assinar”", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “concluir”", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “avançar”", "O técnico deve finalizar o processo de preenchimento da O.S. DIGITAL clicando no botão “assinar ordem de serviço”"], c: 0, t: 25},
+            {q: "Com o gravador na Nuvem, os conteúdos gravados ficarão disponíveis pelo período de:", o: ["90 dias contados a partir da data de gravação", "180 dias contados a partir da data de gravação.", "45 dias contados a partir da data de gravação.", "30 dias contados a partir da data de gravação."], c: 3, t: 20},
+            {q: "Conforme procedimento de Baixa na URA, para o MAC 0023754F1608, é necessário digitar para o caractere hexadecimal (F):", o: ["*6", "*06", "6", "#6"], c: 1, t: 20},
+            {q: "Sobre o teste de TRACERT, é correto afirmar que:", o: ["É um comando para configurar, habilitar ou desabilitar o Firewall da máquina", "É um teste de rota que visualiza a solicitação de acesso a uma determinada página ou servidor com o objetivo de verificar lentidão, bloqueio ou gargalo ao site solicitado", "É um teste para determinar se a velocidade da navegação do cliente está dentro ou fora da velocidade contratada.", "É um teste para verificar a existência de vírus ou Cavalo de Tróia no computador do cliente."], c: 1, t: 40},
+            {q: "Dentre as opções abaixo, qual representa baixo potencial de barreira/interferência para o sinal de Wi-Fi?", o: ["Madeira e Gesso", "Água e Árvores", "Concreto e Metal", "Micro-ondas e Telefone sem fio."], c: 0, t: 25},
+            {q: "Dos padrões de redes Wi-Fi abaixo, qual nos proporciona a maior velocidade da taxa de transmissão?", o: ["n", "b", "g", "ac"], c: 3, t: 20},
+            {q: "Qual site devemos acessar para verificar a velocidade de conexão do CLARO Vírtua?", o: ["www.brasilbandalarga.com.br", "www.minhaconexao.com.br", "www.rjnet.com.br", "www.testesuavelocidade.com.br"], c: 0, t: 20},
+            {q: "Sobre o #NET WIFI, podemos afirmar: (1) Rede de Spots instalada pelas ruas; (2) Rede exibida nos EMTA’s 3.0 compatíveis.", o: ["As afirmações 1 e 2 estão corretas", "Apenas a afirmação 1 está correta", "Apenas a afirmação 2 está correta", "As afirmações não são corretas."], c: 0, t: 30},
+            {q: "O que é PIP:", o: ["O PIP é um recurso que possibilita visualizar outro canal através de uma pequena janela, ao mesmo tempo que assiste a um programa na tela principal.", "O PIP possibilita a transferência de dados e arquivos entre os clientes NET Vírtua.", "O PIP possibilita a visualização das imagens armazenadas na rede do cliente em seu telefone.", "O PIP possibilita o pagamento da fatura da Claro através do controle remoto."], c: 0, t: 35},
+            {q: "Dos padrões de criptografia WiFi listados abaixo, qual é considerado o mais seguro?", o: ["RADIUS PSK", "WEP", "WPA + TKIP", "WPA2 + AES"], c: 3, t: 20},
+            {q: "O que é AutoHit?", o: ["Funcionalidade que permite o envio automático de HIT pelo controle remoto em equipamentos HD e HDMAX", "Funcionalidade que permite o envio automático de HIT pelo controle remoto em equipamentos SD, HD e HDMAX", "Funcionalidade que permite o reset do decodificador e suas configurações", "Todas as alternativas estão corretas."], c: 0, t: 30},
+            {q: "Sobre a configuração dos serviços inteligentes do ClaroFone, qual das informações abaixo está correta?", o: ["O SIGA-ME não está disponível para pacotes com Busca Automática.", "O SIGA-ME só pode ser habilitado após o pagamento da 1º fatura", "Ao configurar o SIGA-ME, desative o serviço de CHAMADA EM ESPERA.", "Todas as opções estão corretas."], c: 3, t: 35},
+            {q: "Qual o procedimento correto para realizar a validação de retorno?", o: ["Canal 262 + 8291 + Preenchimento do número da O.S. e Contrato", "Canal 262 + Menu + 8291 + Preenchimento do número da O.S. e Contrato", "Canal 262 + Menu + Tecla Azul + 8291 + Preenchimento do número da O.S. e Contrato", "Canal 262 + Tecla Azul + 8291 + Preenchimento da número da O.S. e Contrato"], c: 3, t: 35},
+            {q: "IPCONFIG /RENEW é o comando correto para forçar a renovação de um IPV4 ou IPV6?", o: ["Não é possível forçar a renovação do IP", "Não, o comando que utilizamos para renovação do IP é CHKDSK", "Sim, o comando que utilizamos para renovação do IP é IPCONFIG /RENEW", "Não, o comando correto é IPCONFIG /RELEASE"], c: 2, t: 25},
+            {q: "Para verificação dos endereçáveis ( CA ID e SmartCard ) para realizar a baixa, usamos qual canal?", o: ["250", "252", "270", "272"], c: 2, t: 20},
+            {q: "Para considerarmos um Decoder HD/HDMAX ON-line, qual opção abaixo é a correta?", o: ["Nas configurações verificar se o IP inicia em: 10.xxx.xxx.xxx", "Nas configurações verificar se o IP inicia em: 168.xxx.xxx.xxx", "Nas configurações verificar se o IP inicia em: 189.xxx.xxx.xxx", "Nas configurações verificar se o IP inicia em: 192.xxx.xxx.xxx"], c: 0, t: 30},
+            {q: "Dentre as alternativas abaixo, qual delas apresenta uma melhor qualidade de sinal digital?", o: ["BER 1.0 E-05", "BER 1.0 E-07", "BER 2.0 E-08", "BER 9 E-06"], c: 2, t: 30},
+            {q: "Ao término de uma instalação, se o serviço de gravação não funciona, o que fazer?", o: ["Confere o UPDATE ID", "Conferir se o serviço está ativo em seu contrato", "Enviar HIT para o Decoder", "Todas as alternativas estão corretas"], c: 3, t: 30},
+            {q: "Se o teste de download apresenta uma taxa de transferência de 7,5MBps, qual a velocidade contratada?", o: ["100 Mbps", "12 Mbps", "120 Mbps", "60 Mbps"], c: 3, t: 35},
+            {q: "Quais são os serviços inteligentes do CLARO FONE?", o: ["Bina, Conferencia a 3, Chamada em Espera, Siga-me e Bloqueio", "Conferência, PME, Portabilidade, Identificador de Chamada e Espera", "4 Extensões, Mesh, Bina e Identificador de Chamada", "Consultanumero.ABRTelecom, Bloqueio e Bina"], c: 0, t: 35},
+            {q: "Quais os movimentos que o sinal faz ao entrar no DC de 6?", o: ["Inserção / Derivação / Isolação", "Derivação / Isolação / Inserção", "Inserção / Inserção / Derivação", "Isolação / Isolação / Derivação"], c: 0, t: 30},
+            {q: "Um IP Nateado (CGNAT) começa com qual número?", o: ["102.168.2.34", "100.981.5.23", "255.255.255.0", "192.168.0.1"], c: 1, t: 20},
+            {q: "Sobre o NOW / CLARO TV+, assinale a alternativa correta:", o: ["Aluguel por TV ou computador", "Cadastro de até 5 dispositivos móveis", "Play simultâneo em móvel e computador", "Todas as alternativas estão corretas."], c: 3, t: 30},
+            {q: "Ao iniciar uma instalação e identificar que não há disponibilidade de HP no tap, o que deve ser feito?", o: ["Inserir um divisor na rede normalmente", "Não realizar a instalação, baixar com código #205 e abrir ocorrência PE1", "Baixar com #203 para encaminhar rede externa", "Inserir divisor na rede externa e baixar com #409"], c: 1, t: 35},
+            {q: "Para verificar se o sinal de wifi é suficiente (Analyzer), os níveis devem ser:", o: ["De -10 a -70 dBm", "Entre 40dbmv a 52dbmv", "Entre -12 e +12 dbmv", "Usar um canal livre deixa o sinal fraco"], c: 0, t: 25},
+            {q: "Qual a inclinação correta da furadeira para furos expostos ao tempo?", o: ["Furar de dentro para fora, inclinando 15° para baixo", "Furar de dentro para fora, inclinando 15° para cima", "Furar de dentro para fora em ângulo reto", "Furar de fora para dentro, inclinando 15° para baixo"], c: 0, t: 25},
+            {q: "O que é downstream?", o: ["Sinal que o CMTS envia para o Emta.", "Sinal que o Emta envia para o cmts.", "Sinal que o medido envia para o EMTA.", "Sinal que o Emta envia para o medidor."], c: 0, t: 20},
+            {q: "Referência Entrada 15 dbmv (CA) e 12 dbmv (CB). Quais níveis na saída TAP do DC 06?", o: ["CA: 12,5 dBmV, CB 9,5 dBmV", "CA: 13,5 dBmV, CB: 10,5 dBmV", "CA: 15 dBmV, CB: 12 dBmV", "CA: 09 dBmV, CB: 06 dBmV"], c: 3, t: 40},
+            {q: "Referência 19 dBmV em 550 MHz. Ao passar por um DC 12 DB, quais valores nas Saídas OUT e TAP?", o: ["16 dbmv e 7 dbmv", "17 dbmv e 8 dbmv", "18 dbmv e 7 dbmv", "19 dbmv e 8 dbmv"], c: 2, t: 40},
+            {q: "O que você entende por DOCSIS?", o: ["Padrão utilizado para interface de transmissão de dados via cabo", "Padrão utilizado para interface de recepção de imagem via cabo", "Tecnologia para velocidade a partir de 50 mega", "Tecnologia utilizada em todos os decodificadores HD"], c: 0, t: 25},
+            {q: "O que acontece com o sinal se o cabo for amassado na instalação?", o: ["Aumento na blindagem contra interferência", "Alteração na impedância característica do cabo", "Inversão do tilt entre canal alto e baixo", "Satura as frequências mais altas"], c: 1, t: 25},
+            {q: "Informações que não podem faltar em um atendimento de excelência?", o: ["Telefone da central e do coordenador", "Utilização do NOW, instrução do controle remoto e aplicativo MINHA CLARO RESIDENCIAL.", "Informar seu telefone pessoal para o cliente", "Nenhuma alternativa anterior"], c: 1, t: 30},
+            {q: "Qual o melhor local para instalação do Emta visando cobertura Wi-Fi?", o: ["Na cozinha (lugar com mais pessoas)", "No ponto mais alto da residência (sótão)", "Sinal entre -70 dBm e -90 dBm", "Cômodo central para atingir 80% da casa entre -10 a -70dbm"], c: 3, t: 35},
+            {q: "O que é PIP e em quais decodificadores está disponível?", o: ["Recurso para visualizar outro canal em janela pequena (HDNG e 4K)", "Recurso para visualizar outro canal em janela pequena (Todos os HD)", "Recurso para visualizar níveis de sinal no canal 270", "Som emitido quando o sinal está fora do padrão"], c: 0, t: 30},
+            {q: "Qual rede é adequada para uma TV 4K Ultra HD via Wi-Fi?", o: ["Rede 2.4 GHz (sofre menos interferência / banda menor)", "Rede 2.4 GHz (sofre mais interferência / banda maior)", "Rede 5 GHZ (sofre mais interferência / banda maior)", "Rede 5 GHZ (sofre menos interferência / banda maior)"], c: 3, t: 30},
+            {q: "O que é REPLAY TV nos pacotes TOP HD / HD MAX e Claro tv+?", o: ["Funcionalidade para gravar títulos do NOW", "Funcionalidade para assistir novamente toda a programação", "Funcionalidade para assistir replay de gols", "Recomeçar evento atual do início ou acessar conteúdos de até 7 dias"], c: 3, t: 35},
+            {q: "Sobre a função AUTODESLIGAR nos HDNGs, qual o procedimento?", o: ["Desabilitar para evitar novas visitas por desligamentos", "Não deve ser desabilitada para manter o decodificador atualizado", "Já vem desabilitada de fábrica", "Já vem habilitada de fábrica"], c: 1, t: 30},
+            {q: "Qual alternativa abaixo representa a melhor qualidade do sinal digital (Diagnóstico)?", o: ["PS 100%, QS 100% e BER -5", "PS 60%, QS 100% e BER -8", "PS 90%, QS 70% e BER -7", "PS 95%, QS 70% e BER -6"], c: 1, t: 30},
+            {q: "Quais recursos teremos em um decoder com Update ID 1?", o: ["Alta definição, Serviço de Gravação e NOW", "Alta definição e Now (VOD)", "Alta definição e serviço de gravação", "Somente alta definição"], c: 1, t: 25},
+            {q: "Para evitar lentidão por congestionamento de canais Wi-Fi, devemos:", o: ["Configurar sempre o canal 11", "Garantir níveis entre -40 à -70 dBm no Analyzer", "Instalar em cômodo central", "Deixar canal em automático e orientar boot no Emta"], c: 3, t: 35},
+            {q: "O que é BER?", o: ["Taxa de erro de transmissão", "Taxa de erro de recepção", "Taxa de erro de modulação", "Taxa de erro de bit"], c: 3, t: 20}
         ];
 
         let cur = 0, score = 0, timer, timeLeft, pName = "";
 
         window.init = () => {
             pName = document.getElementById('p-name').value;
-            if(!pName) return alert("Por favor, digite seu nome!");
+            if(!pName) return alert("Por favor, digite seu nome completo!");
             document.getElementById('setup').classList.add('hidden');
             document.getElementById('quiz').classList.remove('hidden');
             loadQ();
@@ -143,17 +170,17 @@
             }
 
             const expBox = document.getElementById('explanation');
-            expBox.innerText = `💡 EXPLICAÇÃO: ${QUESTIONS[cur].e}`;
+            expBox.innerText = `💡 FEEDBACK: Resposta correta validada conforme manual PROCISA/CLARO.`;
             expBox.classList.remove('hidden');
 
             cur++;
-            setTimeout(loadQ, 4000);
+            setTimeout(loadQ, 3500);
         }
 
         async function finish() {
             document.getElementById('quiz').classList.add('hidden');
             document.getElementById('result').classList.remove('hidden');
-            document.getElementById('final-msg').innerText = `${pName}, pontuação: ${score} pts!`;
+            document.getElementById('final-msg').innerText = `${pName}, sua nota final: ${score} pts!`;
             await setDoc(doc(db, "ranking", pName + "_" + Date.now()), { name: pName, score: score });
         }
 
