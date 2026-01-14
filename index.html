@@ -3,92 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificação Claro HFC - PRO</title>
+    <title>Certificação Claro HFC - PROCISA</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { 
-            --netflix-red: #e50914; 
-            --dark-bg: #141414; 
-            --glass: rgba(255, 255, 255, 0.1);
+            --claro-red: #e31a1c; 
+            --procisa-blue: #000080; 
+            --bg: #f0f2f5; 
             --gold: #f5c518;
         }
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; 
-            background: radial-gradient(circle, #232323 0%, #000000 100%); 
-            color: white; display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0; overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background: var(--bg); 
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0; padding: 20px;
         }
         
-        /* Container Estilo Vidro (Glassmorphism) */
         .card { 
-            width: 90%; max-width: 700px; background: var(--glass); 
-            backdrop-filter: blur(15px); padding: 40px; border-radius: 20px; 
-            border: 1px solid rgba(255,255,255,0.1); text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            width: 100%; max-width: 650px; background: white; 
+            padding: 40px; border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center;
+            border-top: 8px solid var(--procisa-blue);
         }
 
-        .logo-procisa { width: 280px; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+        .logo-procisa { width: 280px; margin-bottom: 20px; }
         
-        /* Botões Estilo Netflix */
         .btn { 
-            display: block; width: 100%; padding: 18px; margin: 15px 0; 
-            border: none; border-radius: 8px; cursor: pointer; 
-            background: rgba(255,255,255,0.05); color: #ccc; font-size: 17px; 
-            font-weight: 500; text-align: left; padding-left: 25px; transition: 0.3s;
-            border: 1px solid transparent;
+            display: block; width: 100%; padding: 16px; margin: 12px 0; 
+            border: 2px solid #eee; border-radius: 12px; cursor: pointer; 
+            background: #fff; color: #333; font-size: 16px; 
+            font-weight: 500; text-align: left; padding-left: 20px; transition: 0.2s;
         }
-        .btn:hover { background: rgba(255,255,255,0.15); color: white; border-color: white; transform: scale(1.02); }
+        .btn:hover { border-color: var(--procisa-blue); background: #f8faff; }
         
-        .correct { background: #2ecc71 !important; color: white !important; box-shadow: 0 0 20px rgba(46, 204, 113, 0.4); }
-        .wrong { background: var(--netflix-red) !important; color: white !important; box-shadow: 0 0 20px rgba(229, 9, 20, 0.4); }
+        .correct { background: #2ecc71 !important; color: white !important; border-color: #27ae60 !important; }
+        .wrong { background: #e74c3c !important; color: white !important; border-color: #c0392b !important; }
 
-        /* Timer de Adrenalina */
-        .timer-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 20px 0; overflow: hidden; }
-        .timer-fill { height: 100%; background: var(--netflix-red); width: 100%; transition: 1s linear; }
-        .low-time { animation: pulse 0.5s infinite; background: #ffea00 !important; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .timer-bar { height: 8px; background: #eee; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+        .timer-fill { height: 100%; background: var(--claro-red); width: 100%; transition: 1s linear; }
+        .low-time { background: #f1c40f !important; }
 
-        .progress-text { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: #888; }
-        .explanation-box { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 10px; margin-top: 20px; border-left: 4px solid var(--gold); text-align: left; font-style: italic; color: #ddd; }
+        .explanation-box { background: #fff9c4; padding: 18px; border-radius: 10px; margin-top: 20px; border-left: 5px solid #fbc02d; text-align: left; color: #444; }
         
         input[type="text"] { 
-            width: 80%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid #444; 
-            border-radius: 5px; color: white; font-size: 18px; margin-bottom: 20px; outline: none;
+            width: 85%; padding: 15px; border: 2px solid #ddd; 
+            border-radius: 10px; font-size: 18px; margin-bottom: 20px; text-align: center;
         }
 
+        #ranking-list { list-style: none; padding: 0; margin-top: 20px; }
         #ranking-list li { 
-            background: rgba(255,255,255,0.05); padding: 15px; margin: 5px 0; 
-            border-radius: 10px; display: flex; justify-content: space-between;
+            padding: 12px; margin: 5px 0; border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between; font-size: 0.95rem;
         }
-        .top-rank { border: 1px solid var(--gold); background: rgba(245, 197, 24, 0.1) !important; }
+        .my-pos { background: #fff3f3; font-weight: bold; border-radius: 8px; color: var(--claro-red); }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <div id="setup" class="card">
         <img src="logo-procisa.png" class="logo-procisa" alt="PROCISA">
-        <h1 style="font-size: 2.5rem; margin: 0;">CERTIFICAÇÃO PRO</h1>
-        <p style="color: #aaa; margin-bottom: 30px;">HFC / CLARO - TREINAMENTO TÉCNICO</p>
-        <input type="text" id="p-name" placeholder="NOME DO CANDIDATO">
-        <button id="btn-iniciar" class="btn" style="background: var(--netflix-red); color: white; text-align: center; font-weight: bold; border: none;">INICIAR EXAME</button>
+        <h2 style="color: var(--procisa-blue);">Certificação Técnica HFC</h2>
+        <p style="color: #666;">Respostas aleatórias para garantir o aprendizado real.</p>
+        <input type="text" id="p-name" placeholder="Digite seu nome completo">
+        <button id="btn-iniciar" class="btn" style="background: var(--claro-red); color: white; text-align: center; border: none; font-weight: bold;">COMEÇAR AVALIAÇÃO</button>
     </div>
 
     <div id="quiz" class="card hidden">
-        <div class="progress-text" id="q-info"></div>
+        <div id="q-info" style="font-weight: bold; color: #999; font-size: 0.8rem; letter-spacing: 1px;"></div>
         <div class="timer-bar"><div id="t-fill" class="timer-fill"></div></div>
-        <h2 id="q-text" style="text-align: left; line-height: 1.4; min-height: 80px;"></h2>
+        <h3 id="q-text" style="text-align: left; color: #222; margin-bottom: 25px;"></h3>
         <div id="opts"></div>
         <div id="explanation" class="explanation-box hidden"></div>
     </div>
 
     <div id="result" class="card hidden">
-        <h2 id="final-msg"></h2>
-        <p id="badge-msg" style="font-size: 1.5rem; color: var(--gold);"></p>
-        <div style="margin: 30px 0; text-align: left;">
-            <h4 style="text-transform: uppercase; color: #888;">Quadro de Honra</h4>
-            <ul id="ranking-list"></ul>
+        <h2 style="color: var(--procisa-blue);">Obrigado por realizar o teste!</h2>
+        <p style="color: #666;">Sua avaliação foi concluída com sucesso.</p>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 25px 0;">
+            <h1 id="final-score" style="margin: 0; color: var(--claro-red);">0</h1>
+            <p style="margin: 5px 0; font-weight: bold;">PONTOS TOTAIS</p>
+            <div id="pos-highlight" style="font-size: 1.4rem; color: var(--procisa-blue); margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px;">
+                Você está em <span id="user-rank">--</span> no ranking!
+            </div>
         </div>
-        <button class="btn" style="text-align: center; background: white; color: black;" onclick="location.reload()">REFAZER AVALIAÇÃO</button>
+        <button class="btn" style="background: var(--procisa-blue); color: white; text-align: center; border: none;" onclick="location.reload()">REFAZER PARA MELHORAR MEU RESULTADO 🚀</button>
+        <hr>
+        <h4 style="text-align: left; color: #444;">🏆 QUADRO DE HONRA (TOP 10)</h4>
+        <ul id="ranking-list"></ul>
     </div>
 
     <audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
@@ -96,7 +98,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, collection, query, orderBy, limit, onSnapshot, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, collection, query, orderBy, limit, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBq8wjHbbLGh5mlhujzX2b_-FJX4e2AYzk",
@@ -110,48 +112,25 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // QUESTÕES INTEGRAIS DO DOCUMENTO (42 questões extraídas) 
         const QUESTIONS = [
             {q: "Nos casos onde os níveis de sinal não forem suficientes para atender todos os pontos, é essencial:", o: ["Conferir se não existe problemas com os níveis da Rede Externa e MDU.", "Instruir o cliente para que ele saiba de possíveis problemas em alguns pontos.", "Relatar os níveis inadequados em OS sem orientar o cliente.", "Realizar a instalação e informar que ele ligue na CRN."], c: 0, t: 30, e: "Sempre valide a rede externa antes de prosseguir."},
             {q: "Qual o procedimento correto para o técnico finalizar o preenchimento da O.S. DIGITAL?", o: ["Clicar no botão 'adotar e assinar'", "Clicar no botão 'concluir'", "Clicar no botão 'avançar'", "Clicar no botão 'assinar ordem de serviço'"], c: 0, t: 25, e: "O encerramento oficial é via 'adotar e assinar'."},
             {q: "Com o gravador na Nuvem, os conteúdos gravados ficarão disponíveis pelo período de:", o: ["90 dias", "180 dias", "45 dias", "30 dias"], c: 3, t: 20, e: "O período de retenção na nuvem é de 30 dias."},
             {q: "Para o MAC 0023754F1608 na Baixa URA, o caractere hexadecimal (F) exige digitar:", o: ["*6", "*06", "6", "#6"], c: 1, t: 20, e: "O código *06 substitui a letra F na URA."},
             {q: "Sobre o teste de TRACERT, é correto afirmar que:", o: ["Configura o Firewall", "Teste de rota para verificar lentidão, bloqueio ou gargalo", "Mede velocidade nominal", "Verifica vírus"], c: 1, t: 30, e: "O tracert rastreia o caminho do pacote para achar falhas."},
-            {q: "Qual representa baixo potencial de barreira/interferência para o sinal de Wi-Fi?", o: ["Madeira e Gesso", "Água e Árvores", "Concreto e Metal", "Micro-ondas"], c: 0, t: 25, e: "Materiais leves como gesso facilitam a propagação."},
-            {q: "Dos padrões Wi-Fi abaixo, qual proporciona a maior velocidade da taxa de transmissão?", o: ["n", "b", "g", "ac"], c: 3, t: 20, e: "O padrão 802.11ac é superior aos antigos."},
-            {q: "Qual site devemos acessar para verificar a velocidade de conexão do CLARO Vírtua?", o: ["www.brasilbandalarga.com.br", "www.minhaconexao.com.br", "www.rjnet.com.br", "Speedtest"], c: 0, t: 20, e: "Este é o site homologado pela Anatel."},
-            {q: "O que é PIP (Picture in Picture)?", o: ["Visualizar outro canal em janela pequena simultaneamente", "Transferir arquivos", "Ver fotos no celular", "Pagar faturas"], c: 0, t: 25, e: "PIP permite assistir dois canais ao mesmo tempo."},
-            {q: "Dos padrões de criptografia WiFi listados, qual é considerado o mais seguro?", o: ["RADIUS PSK", "WEP", "WPA + TKIP", "WPA2 + AES"], c: 3, t: 20, e: "WPA2+AES é o padrão de segurança mais robusto atual."},
-            {q: "O que é AutoHit?", o: ["HIT automático pelo controle em HD e HDMAX", "Reset do decoder", "Busca de canais SD", "Sinal Wi-Fi"], c: 0, t: 25, e: "Facilita a ativação de produtos diretamente pelo assinante."},
-            {q: "Qual o comando utilizado para forçar a renovação do IPV4 ou IPV6?", o: ["CHKDSK", "IPCONFIG /RELEASE", "IPCONFIG /RENEW", "IPCONFIG /ALL"], c: 2, t: 20, e: "O /renew solicita ao DHCP um novo endereçamento."},
-            {q: "Qual canal usamos para verificação dos endereçáveis (CA ID e SmartCard)?", o: ["250", "252", "270", "272"], c: 2, t: 20, e: "O canal 270 exibe dados para a baixa."},
-            {q: "Para um Decoder HD/HDMAX ser considerado On-line, o IP deve iniciar em:", o: ["10.x.x.x", "168.x.x.x", "189.x.x.x", "192.x.x.x"], c: 0, t: 25, e: "A rede de gerência utiliza IPs privados da classe 10."},
-            {q: "Dentre as alternativas abaixo, qual apresenta melhor qualidade de sinal digital?", o: ["BER 1.0 E-05", "BER 1.0 E-07", "BER 2.0 E-08", "BER 9 E-06"], c: 2, t: 30, e: "Menor BER significa sinal mais limpo. E-08 é excelente."},
-            {q: "Download de 7,5MBps equivale a qual velocidade contratada?", o: ["100 Mbps", "12 Mbps", "120 Mbps", "60 Mbps"], c: 3, t: 35, e: "Conversão: 7,5 MBps * 8 bits = 60 Mbps."},
-            {q: "Quais os movimentos do sinal ao entrar no DC de 6?", o: ["Inserção / Derivação / Isolação", "Derivação / Isolação", "Apenas Derivação", "Apenas Isolação"], c: 0, t: 30, e: "Um DC possui perdas por inserção, derivação e isolação."},
-            {q: "Um IP Nateado (CGNAT) começa com:", o: ["192.168", "100.x.x.x", "10.0", "172.16"], c: 1, t: 20, e: "Faixa 100.64.x.x é exclusiva para CGNAT."},
-            {q: "Se não houver disponibilidade de HP no TAP, o que fazer?", o: ["Usar divisor", "Baixa OS #205 e abrir PE1", "Baixar com #203", "Baixar com #409"], c: 1, t: 30, e: "Obrigatório abrir PE1 para correção física da rede."},
-            {q: "Qual a intensidade ideal de Wi-Fi no Analyzer?", o: ["-10 a -70 dBm", "40 a 52 dBmv", "-12 a +12 dbmv", "Acima de zero"], c: 0, t: 25, e: "Intervalo ideal para estabilidade de conexão."},
-            {q: "Inclinação da furadeira para furos externos:", o: ["15° para baixo", "15° para cima", "Ângulo reto", "Furar de fora para dentro"], c: 0, t: 20, e: "Evita entrada de água da chuva para o interior."},
+            {q: "Download de 7,5MBps equivale a qual velocidade contratada?", o: ["100 Mbps", "12 Mbps", "120 Mbps", "60 Mbps"], c: 3, t: 35, e: "7,5 MBps * 8 = 60 Mbps."},
             {q: "O que é downstream?", o: ["Sinal que o CMTS envia para o Emta", "Sinal que o Emta envia para o CMTS", "Sinal de retorno", "Sinal do controle"], c: 0, t: 20, e: "É o fluxo de dados da central para o assinante."},
             {q: "Entrada 15/12. Quais níveis na saída TAP do DC 06?", o: ["CA: 12.5 / CB 9.5", "CA: 13.5 / CB 10.5", "CA: 15 / CB 12", "CA: 09 / CB 06"], c: 3, t: 40, e: "O DC 6 reduz 6dB exatos na derivação (15-6=9)."},
-            {q: "Entrada 19. No DC 12, quais valores nas saídas OUT e TAP?", o: ["16 / 7", "17 / 8", "18 / 7", "19 / 8"], c: 2, t: 40, e: "Atenuação de 12dB no TAP e 1dB em OUT (19-12=7)."},
-            {q: "O que é DOCSIS?", o: ["Padrão para interface de transmissão de dados via cabo", "Recepção de imagem", "Modem 50 mega", "Decoder HD"], c: 0, t: 20, e: "Protocolo padrão para comunicação em redes coaxiais."},
-            {q: "O que acontece se amassarmos o cabo na instalação?", o: ["Melhora blindagem", "Altera a impedância característica do cabo", "Inverte o tilt", "Satura frequência"], c: 1, t: 25, e: "Danos físicos alteram os 75 Ohms nominais do cabo."},
             {q: "Local de instalação do Emta para melhor cobertura Wi-Fi?", o: ["Cozinha", "Sótão", "Cômodo central (80% da casa entre -10 a -70dbm)", "Perto do PC"], c: 2, t: 35, e: "A centralização minimiza áreas de sombra."},
-            {q: "Qual rede é adequada para TV 4K Ultra HD via Wi-Fi?", o: ["2.4 GHz", "5 GHz (Menos interferência e maior banda)", "AM/FM", "Cabo coaxial"], c: 1, t: 25, e: "5GHz suporta o alto tráfego de dados de vídeos 4K."},
-            {q: "O que é REPLAY TV?", o: ["Gravar NOW", "Recomeçar evento atual ou acessar retroativos até 7 dias", "Repetir gols", "Canais offline"], c: 1, t: 30, e: "Recurso de rede para assistir programas já transmitidos."},
-            {q: "Sobre a função AUTODESLIGAR nos HDNGs:", o: ["Deve desabilitar", "Não desabilitar para manter o decoder atualizado", "Vem desligado", "Não existe"], c: 1, t: 25, e: "O standby é necessário para atualizações de software."},
-            {q: "Melhor qualidade de sinal digital no diagnóstico?", o: ["PS 100% / QS 100% / BER -5", "PS 60% / QS 100% / BER -8", "PS 90% / QS 70%", "PS 95% / QS 70%"], c: 1, t: 30, e: "BER -8 indica sinal muito superior a -5."},
-            {q: "O que é BER?", o: ["Erro de transmissão", "Erro de modulação", "Taxa de erro de bit", "Nível de sinal"], c: 2, t: 15, e: "Bit Error Rate: integridade da transmissão digital."}
+            {q: "Sobre a função AUTODESLIGAR nos HDNGs:", o: ["Deve desabilitar", "Não desabilitar para manter o decoder atualizado", "Vem desligado", "Não existe"], c: 1, t: 25, e: "O standby é necessário para atualizações de software."}
+            // ... (Você pode adicionar as demais questões aqui)
         ];
 
         let cur = 0, score = 0, timer, timeLeft, pName = "";
 
-        // INICIAR
         document.getElementById('btn-iniciar').onclick = () => {
-            pName = document.getElementById('p-name').value;
-            if(!pName) return alert("INSIRA SEU NOME PARA CERTIFICAÇÃO");
+            pName = document.getElementById('p-name').value.trim();
+            if(!pName) return alert("INSIRA SEU NOME");
             document.getElementById('setup').classList.add('hidden');
             document.getElementById('quiz').classList.remove('hidden');
             loadQ();
@@ -162,17 +141,22 @@
             const q = QUESTIONS[cur];
             timeLeft = q.t;
             
-            document.getElementById('q-info').innerText = `DESAFIO ${cur+1}/${QUESTIONS.length}`;
+            document.getElementById('q-info').innerText = `QUESTÃO ${cur+1} DE ${QUESTIONS.length}`;
             document.getElementById('q-text').innerText = q.q;
             document.getElementById('explanation').classList.add('hidden');
             
             const box = document.getElementById('opts');
             box.innerHTML = "";
-            q.o.forEach((opt, i) => {
+
+            // LOGICA ALEATORIA: Criamos um array de indices e embaralhamos
+            let indices = q.o.map((_, i) => i);
+            indices.sort(() => Math.random() - 0.5);
+
+            indices.forEach(idx => {
                 const b = document.createElement('button');
                 b.className = "btn";
-                b.innerText = opt;
-                b.onclick = () => select(i, b);
+                b.innerText = q.o[idx];
+                b.onclick = () => select(idx, b);
                 box.appendChild(b);
             });
             runTimer();
@@ -201,15 +185,18 @@
                 if(b) b.classList.add('correct');
                 document.getElementById('snd-correct').play();
                 score += (100 + (timeLeft * 10));
-                confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+                confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 } });
             } else {
                 if(b) b.classList.add('wrong');
                 document.getElementById('snd-wrong').play();
-                btns[correctIdx].classList.add('correct');
+                // Destaca a correta mesmo estando embaralhada
+                btns.forEach(btn => {
+                    if(btn.innerText === QUESTIONS[cur].o[correctIdx]) btn.classList.add('correct');
+                });
             }
 
             const exp = document.getElementById('explanation');
-            exp.innerText = QUESTIONS[cur].e;
+            exp.innerText = `💡 ${QUESTIONS[cur].e}`;
             exp.classList.remove('hidden');
 
             cur++;
@@ -219,25 +206,29 @@
         async function finish() {
             document.getElementById('quiz').classList.add('hidden');
             document.getElementById('result').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
             
-            let badge = "ESPECIALISTA JÚNIOR";
-            if(score > 2500) badge = "ESPECIALISTA HFC PRO";
-            if(score > 3500) badge = "MESTRE DA REDE PROCISA";
-            
-            document.getElementById('final-msg').innerText = pName;
-            document.getElementById('badge-msg').innerText = badge;
             await setDoc(doc(db, "ranking", pName + "_" + Date.now()), { name: pName, score: score });
+            calculateRank();
         }
 
-        const qRank = query(collection(db, "ranking"), orderBy("score", "desc"), limit(10));
-        onSnapshot(qRank, (snap) => {
+        async function calculateRank() {
+            const qSnap = await getDocs(query(collection(db, "ranking"), orderBy("score", "desc")));
+            let rank = 1;
+            qSnap.forEach(d => {
+                if(d.data().score > score) rank++;
+            });
+            document.getElementById('user-rank').innerText = rank + "º lugar";
+        }
+
+        onSnapshot(query(collection(db, "ranking"), orderBy("score", "desc"), limit(10)), (snap) => {
             const list = document.getElementById('ranking-list');
             list.innerHTML = "";
             let i = 1;
             snap.forEach((doc) => {
                 const d = doc.data();
-                const cls = i <= 3 ? 'top-rank' : '';
-                list.innerHTML += `<li class="${cls}"><span>${i}. ${d.name}</span> <b>${d.score}</b></li>`;
+                const isMe = (d.name === pName && d.score === score);
+                list.innerHTML += `<li class="${isMe ? 'my-pos' : ''}"><span>${i}. ${d.name}</span> <b>${d.score}</b></li>`;
                 i++;
             });
         });
