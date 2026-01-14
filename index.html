@@ -7,55 +7,41 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { 
-            --claro-red: #e31a1c; 
-            --procisa-blue: #000080; 
-            --bg: #f0f2f5; 
-            --gold: #f5c518;
+            --claro-red: #e31a1c; --procisa-blue: #000080; --bg: #f8f9fa; 
+            --gold: #f5c518; --silver: #c0c0c0; --bronze: #cd7f32;
         }
-        body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            background: var(--bg); 
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0; padding: 20px;
-        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 15px; }
         
         .card { 
-            width: 100%; max-width: 650px; background: white; 
-            padding: 40px; border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center;
-            border-top: 8px solid var(--procisa-blue);
+            width: 100%; max-width: 650px; background: white; padding: 35px; border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; border-top: 8px solid var(--procisa-blue);
         }
 
-        .logo-procisa { width: 280px; margin-bottom: 20px; }
+        .logo-procisa { width: 280px; margin-bottom: 15px; }
         
+        /* Botões com Design Premium */
         .btn { 
-            display: block; width: 100%; padding: 16px; margin: 12px 0; 
-            border: 2px solid #eee; border-radius: 12px; cursor: pointer; 
-            background: #fff; color: #333; font-size: 16px; 
-            font-weight: 500; text-align: left; padding-left: 20px; transition: 0.2s;
+            display: block; width: 100%; padding: 16px; margin: 10px 0; border: 2px solid #eee; border-radius: 12px; 
+            cursor: pointer; background: #fff; color: #333; font-size: 15.5px; font-weight: 500; text-align: left; 
+            padding-left: 20px; transition: 0.2s; line-height: 1.4;
         }
-        .btn:hover { border-color: var(--procisa-blue); background: #f8faff; }
+        .btn:hover { border-color: var(--procisa-blue); background: #f8faff; transform: translateY(-2px); }
         
-        .correct { background: #2ecc71 !important; color: white !important; border-color: #27ae60 !important; }
-        .wrong { background: #e74c3c !important; color: white !important; border-color: #c0392b !important; }
+        .correct { background: #28a745 !important; color: white !important; border-color: #218838 !important; }
+        .wrong { background: #ff6b6b !important; color: white !important; border-color: #ee5253 !important; }
 
-        .timer-bar { height: 8px; background: #eee; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+        /* Progress Bar e Timer */
+        .progress-container { width: 100%; background: #eee; height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--procisa-blue); width: 0%; transition: width 0.5s ease; }
+        .timer-bar { height: 6px; background: #eee; border-radius: 3px; margin: 15px 0; overflow: hidden; }
         .timer-fill { height: 100%; background: var(--claro-red); width: 100%; transition: 1s linear; }
-        .low-time { background: #f1c40f !important; }
 
-        .explanation-box { background: #fff9c4; padding: 18px; border-radius: 10px; margin-top: 20px; border-left: 5px solid #fbc02d; text-align: left; color: #444; }
+        .explanation-box { background: #fff9c4; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 5px solid #fbc02d; text-align: left; font-size: 14px; }
+        input[type="text"] { width: 85%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; font-size: 17px; margin-bottom: 20px; text-align: center; }
         
-        input[type="text"] { 
-            width: 85%; padding: 15px; border: 2px solid #ddd; 
-            border-radius: 10px; font-size: 18px; margin-bottom: 20px; text-align: center;
-        }
-
-        #ranking-list { list-style: none; padding: 0; margin-top: 20px; }
-        #ranking-list li { 
-            padding: 12px; margin: 5px 0; border-bottom: 1px solid #eee;
-            display: flex; justify-content: space-between; font-size: 0.95rem;
-        }
-        .my-pos { background: #fff3f3; font-weight: bold; border-radius: 8px; color: var(--claro-red); }
+        #ranking-list { list-style: none; padding: 0; margin-top: 15px; text-align: left; }
+        #ranking-list li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .rank-highlight { background: #fffdf0; border: 1px solid var(--gold); border-radius: 8px; font-weight: bold; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -63,38 +49,36 @@
 
     <div id="setup" class="card">
         <img src="logo-procisa.png" class="logo-procisa" alt="PROCISA">
-        <h2 style="color: var(--procisa-blue);">Certificação Técnica HFC</h2>
-        <p style="color: #666;">Respostas aleatórias para garantir o aprendizado real.</p>
-        <input type="text" id="p-name" placeholder="Digite seu nome completo">
-        <button id="btn-iniciar" class="btn" style="background: var(--claro-red); color: white; text-align: center; border: none; font-weight: bold;">COMEÇAR AVALIAÇÃO</button>
+        <h2>Preparatório para Certificação Claro HFC</h2>
+        <p style="color: #666;">Avaliação Final - Respostas Embaralhadas</p>
+        <input type="text" id="p-name" placeholder="Digite seu Nome Completo">
+        <button id="btn-iniciar" class="btn" style="background: var(--claro-red); color: white; text-align: center; border: none; font-weight: bold; font-size: 18px;">INICIAR EXAME PRO</button>
     </div>
 
     <div id="quiz" class="card hidden">
-        <div id="q-info" style="font-weight: bold; color: #999; font-size: 0.8rem; letter-spacing: 1px;"></div>
+        <div class="progress-container"><div id="p-fill" class="progress-fill"></div></div>
+        <div id="q-info" style="font-weight: bold; color: #888; font-size: 12px; text-transform: uppercase;"></div>
         <div class="timer-bar"><div id="t-fill" class="timer-fill"></div></div>
-        <h3 id="q-text" style="text-align: left; color: #222; margin-bottom: 25px;"></h3>
+        <h3 id="q-text" style="text-align: left; color: #333; line-height: 1.5; margin-bottom: 20px;"></h3>
         <div id="opts"></div>
         <div id="explanation" class="explanation-box hidden"></div>
     </div>
 
     <div id="result" class="card hidden">
         <h2 style="color: var(--procisa-blue);">Obrigado por realizar o teste!</h2>
-        <p style="color: #666;">Sua avaliação foi concluída com sucesso.</p>
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 25px 0;">
-            <h1 id="final-score" style="margin: 0; color: var(--claro-red);">0</h1>
-            <p style="margin: 5px 0; font-weight: bold;">PONTOS TOTAIS</p>
-            <div id="pos-highlight" style="font-size: 1.4rem; color: var(--procisa-blue); margin-top: 10px; border-top: 1px solid #ddd; padding-top: 10px;">
-                Você está em <span id="user-rank">--</span> no ranking!
+        <p>Sua avaliação foi concluída com sucesso.</p>
+        <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin: 20px 0; border: 1px solid #eee;">
+            <h1 id="final-score" style="margin: 0; color: var(--claro-red); font-size: 3rem;">0</h1>
+            <p style="margin: 5px 0; font-weight: bold; color: #555;">PONTOS TOTAIS</p>
+            <div id="pos-highlight" style="font-size: 1.3rem; color: var(--procisa-blue); margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px; font-weight: bold;">
+                Posição no Ranking: <span id="user-rank">--</span>
             </div>
         </div>
-        <button class="btn" style="background: var(--procisa-blue); color: white; text-align: center; border: none;" onclick="location.reload()">REFAZER PARA MELHORAR MEU RESULTADO 🚀</button>
-        <hr>
-        <h4 style="text-align: left; color: #444;">🏆 QUADRO DE HONRA (TOP 10)</h4>
+        <button class="btn" style="background: var(--procisa-blue); color: white; text-align: center; border: none; font-size: 17px;" onclick="location.reload()">REFAZER PARA MELHORAR MEU RESULTADO 🚀</button>
+        <hr style="margin: 25px 0; opacity: 0.3;">
+        <h4 style="text-align: left; color: #444;">🏆 TOP 10 RANKING</h4>
         <ul id="ranking-list"></ul>
     </div>
-
-    <audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
-    <audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/1114/1114-preview.mp3"></audio>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -112,25 +96,57 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // TODAS AS 42 QUESTÕES INTEGRAIS DO DOCUMENTO
         const QUESTIONS = [
-            {q: "Nos casos onde os níveis de sinal não forem suficientes para atender todos os pontos, é essencial:", o: ["Conferir se não existe problemas com os níveis da Rede Externa e MDU.", "Instruir o cliente para que ele saiba de possíveis problemas em alguns pontos.", "Relatar os níveis inadequados em OS sem orientar o cliente.", "Realizar a instalação e informar que ele ligue na CRN."], c: 0, t: 30, e: "Sempre valide a rede externa antes de prosseguir."},
-            {q: "Qual o procedimento correto para o técnico finalizar o preenchimento da O.S. DIGITAL?", o: ["Clicar no botão 'adotar e assinar'", "Clicar no botão 'concluir'", "Clicar no botão 'avançar'", "Clicar no botão 'assinar ordem de serviço'"], c: 0, t: 25, e: "O encerramento oficial é via 'adotar e assinar'."},
-            {q: "Com o gravador na Nuvem, os conteúdos gravados ficarão disponíveis pelo período de:", o: ["90 dias", "180 dias", "45 dias", "30 dias"], c: 3, t: 20, e: "O período de retenção na nuvem é de 30 dias."},
-            {q: "Para o MAC 0023754F1608 na Baixa URA, o caractere hexadecimal (F) exige digitar:", o: ["*6", "*06", "6", "#6"], c: 1, t: 20, e: "O código *06 substitui a letra F na URA."},
-            {q: "Sobre o teste de TRACERT, é correto afirmar que:", o: ["Configura o Firewall", "Teste de rota para verificar lentidão, bloqueio ou gargalo", "Mede velocidade nominal", "Verifica vírus"], c: 1, t: 30, e: "O tracert rastreia o caminho do pacote para achar falhas."},
-            {q: "Download de 7,5MBps equivale a qual velocidade contratada?", o: ["100 Mbps", "12 Mbps", "120 Mbps", "60 Mbps"], c: 3, t: 35, e: "7,5 MBps * 8 = 60 Mbps."},
-            {q: "O que é downstream?", o: ["Sinal que o CMTS envia para o Emta", "Sinal que o Emta envia para o CMTS", "Sinal de retorno", "Sinal do controle"], c: 0, t: 20, e: "É o fluxo de dados da central para o assinante."},
-            {q: "Entrada 15/12. Quais níveis na saída TAP do DC 06?", o: ["CA: 12.5 / CB 9.5", "CA: 13.5 / CB 10.5", "CA: 15 / CB 12", "CA: 09 / CB 06"], c: 3, t: 40, e: "O DC 6 reduz 6dB exatos na derivação (15-6=9)."},
-            {q: "Local de instalação do Emta para melhor cobertura Wi-Fi?", o: ["Cozinha", "Sótão", "Cômodo central (80% da casa entre -10 a -70dbm)", "Perto do PC"], c: 2, t: 35, e: "A centralização minimiza áreas de sombra."},
-            {q: "Sobre a função AUTODESLIGAR nos HDNGs:", o: ["Deve desabilitar", "Não desabilitar para manter o decoder atualizado", "Vem desligado", "Não existe"], c: 1, t: 25, e: "O standby é necessário para atualizações de software."}
-            // ... (Você pode adicionar as demais questões aqui)
+            {q: "Nos casos onde os níveis de sinal não forem suficientes para atender todos os pontos, é essencial:", o: ["Conferir se não existe problemas com os níveis da Rede Externa e MDU.", "Instruir o cliente para que ele saiba de possíveis problemas em alguns pontos.", "Relatar os níveis inadequados em OS sem orientar o cliente.", "Realizar a instalação e informar que ele ligue na CRN."], c: 0, t: 30, e: "Sempre valide a rede externa antes de prosseguir. [cite: 4, 5]"},
+            {q: "Qual o procedimento correto para o técnico finalizar o preenchimento da O.S. DIGITAL?", o: ["O técnico deve finalizar o processo clicando no botão 'adotar e assinar'", "O técnico deve finalizar clicando no botão 'concluir'", "O técnico deve finalizar clicando no botão 'avançar'", "O técnico deve finalizar clicando no botão 'assinar ordem de serviço'"], c: 0, t: 30, e: "O encerramento oficial é via 'adotar e assinar'. [cite: 9, 10]"},
+            {q: "Com o gravador na Nuvem, os conteúdos gravados ficarão disponíveis pelo período de:", o: ["90 dias", "180 dias", "45 dias", "30 dias"], c: 3, t: 25, e: "O período de retenção na nuvem é de 30 dias. [cite: 14, 18]"},
+            {q: "Na Baixa URA, para o MAC 0023754F1608, é necessário digitar para o caractere hexadecimal (F):", o: ["*6", "*06", "6", "#6"], c: 1, t: 25, e: "O código *06 substitui a letra F na URA. [cite: 19, 21]"},
+            {q: "Sobre o teste de TRACERT, é correto afirmar que:", o: ["Configura o Firewall", "É um teste de rota para verificar lentidão, bloqueio ou gargalo ao site solicitado", "Mede velocidade de navegação", "Verifica vírus"], c: 1, t: 35, e: "O tracert rastreia o caminho do pacote para achar falhas. [cite: 24, 26]"},
+            {q: "Qual representa baixo potencial de barreira/interferência para o sinal de Wi-Fi?", o: ["Madeira e Gesso", "Água e Árvores", "Concreto e Metal", "Micro-ondas e telefone sem fio"], c: 0, t: 25, e: "Madeira e Gesso possuem baixo potencial de barreira. [cite: 29, 30]"},
+            {q: "Dos padrões Wi-Fi abaixo, qual nos proporciona a maior velocidade da taxa de transmissão?", o: ["n", "b", "g", "ac"], c: 3, t: 25, e: "O padrão 802.11ac é superior em velocidade. [cite: 34, 38]"},
+            {q: "Qual site devemos acessar para verificar a velocidade de conexão do CLARO Vírtua?", o: ["www.brasilbandalarga.com.br", "www.minhaconexao.com.br", "www.rjnet.com.br", "Speedtest"], c: 0, t: 25, e: "Este é o site homologado pela Anatel para medições. [cite: 39, 40]"},
+            {q: "Sobre o #NET WIFI, podemos afirmar que a rede de Spots em ruas e a rede exibida nos EMTA's 3.0:", o: ["As afirmações 1 e 2 estão corretas", "Apenas a afirmação 1 está correta", "Apenas a afirmação 2 está correta", "As afirmações não são corretas"], c: 0, t: 30, e: "Ambas as afirmações sobre #NET WIFI estão corretas. [cite: 44, 47]"},
+            {q: "O que é PIP (Picture in Picture)?", o: ["Visualizar outro canal em janela pequena simultaneamente", "Transferência de arquivos entre clientes", "Ver fotos no celular", "Pagar fatura pelo controle"], c: 0, t: 30, e: "Permite acompanhar dois canais ao mesmo tempo. [cite: 51, 52]"},
+            {q: "Dos padrões de criptografia WiFi listados abaixo, qual é considerado o mais seguro?", o: ["RADIUS PSK", "WEP", "WPA + TKIP", "WPA2 + AES"], c: 3, t: 25, e: "WPA2+AES é o padrão mais seguro atualmente. [cite: 57, 60]"},
+            {q: "O que é AutoHit?", o: ["Envio automático de HIT pelo controle em equipamentos HD e HDMAX", "Envio automático de HIT em equipamentos SD, HD e HDMAX", "Reset do decodificador", "Configuração de rede"], c: 0, t: 25, e: "Facilita a ativação diretamente pelo controle HD/HDMAX. [cite: 61, 62]"},
+            {q: "Sobre os serviços inteligentes ClaroFone, o SIGA-ME e Busca Automática:", o: ["São incompatíveis e o cliente deve escolher entre um ou outro", "Podem ser usados juntos sempre", "Exigem 1 ano de contrato", "Não existem"], c: 0, t: 30, e: "O SIGA-ME não está disponível com Busca Automática. [cite: 66, 67]"},
+            {q: "Qual o procedimento correto para realizar a validação de retorno?", o: ["Canal 262 + Tecla Azul + 8291 + Preenchimento da OS e Contrato", "Canal 262 + 8291", "Canal 262 + Menu + 8291", "Canal 262 + Tecla Azul + Contrato"], c: 0, t: 35, e: "A validação técnica é feita via canal 262 + Tecla Azul. [cite: 72, 76]"},
+            {q: "Qual o comando utilizado para forçar a renovação do IP dinâmico (DHCP)?", o: ["IPCONFIG /RENEW", "CHKDSK", "IPCONFIG /RELEASE", "IPCONFIG /ALL"], c: 0, t: 25, e: "O comando /renew solicita novo endereçamento ao servidor. [cite: 77, 81]"},
+            {q: "Para verificação dos endereçáveis (CA ID e SmartCard) para realizar a baixa, usamos:", o: ["Canal 270", "Canal 250", "Canal 252", "Canal 272"], c: 0, t: 20, e: "O canal 270 exibe os dados técnicos necessários. [cite: 83, 86]"},
+            {q: "Para considerarmos um Decoder HD/HDMAX ON-line, o IP deve iniciar em:", o: ["10.xxx.xxx.xxx", "168.xxx.xxx.xxx", "189.xxx.xxx.xxx", "192.xxx.xxx.xxx"], c: 0, t: 25, e: "A rede de gerência utiliza IPs da classe 10. [cite: 88, 89]"},
+            {q: "Dentre as alternativas abaixo, qual delas apresenta uma melhor qualidade de sinal?", o: ["BER 2.0 E-08", "BER 1.0 E-05", "BER 1.0 E-07", "BER 9 E-06"], c: 0, t: 30, e: "Menor BER significa sinal mais limpo. E-08 é excelente. [cite: 93, 96]"},
+            {q: "Se o serviço de gravação não funciona ao término da instalação, deve-se:", o: ["Todas as alternativas (Update ID, Contrato, HIT)", "Apenas enviar HIT", "Apenas trocar o decoder", "Apenas conferir contrato"], c: 0, t: 30, e: "Deve-se validar Update ID, contrato e enviar HIT. [cite: 98, 102]"},
+            {q: "Taxa de download de 7,5MBps equivale a qual velocidade contratada?", o: ["60 Mbps", "100 Mbps", "12 Mbps", "120 Mbps"], c: 0, t: 35, e: "7,5MBps * 8 bits = 60 Mbps. [cite: 103, 107]"},
+            {q: "Quais os serviços inteligentes do CLARO FONE?", o: ["Bina, Conferencia a 3, Chamada em Espera, Siga-me e Bloqueio", "Bina e Wi-Fi", "Apenas Bina", "Bloqueio e NOW"], c: 0, t: 35, e: "Inclui Bina, Conferência, Espera, Siga-me e Bloqueio. [cite: 108, 109]"},
+            {q: "Quais os movimentos que o sinal faz ao entrar no DC de 6?", o: ["Inserção / Derivação / Isolação", "Apenas Isolação", "Derivação / Isolação", "Apenas Inserção"], c: 0, t: 30, e: "O sinal sofre perda por inserção, derivação e isolação. [cite: 113, 114]"},
+            {q: "Um IP Nateado começa com qual número?", o: ["100.981.5.23", "102.168.2.34", "255.255.255.0", "192.168.0.1"], c: 0, t: 20, e: "O IP nateado (CGNAT) inicia na faixa 100. [cite: 118, 120]"},
+            {q: "Sobre o NOW / CLARO TV+, é correto afirmar:", o: ["Todas as alternativas (Aluguel, Dispositivos, Play simultâneo)", "Apenas aluguel pela TV", "Apenas 1 dispositivo", "Não tem play simultâneo"], c: 0, t: 30, e: "Suporta aluguel multi-tela e vários dispositivos. [cite: 123, 127]"},
+            {q: "Dos padrões de criptografia wi-fi, qual é o mais seguro?", o: ["WPA2", "WEP", "WAP", "WPA"], c: 0, t: 20, e: "WPA2 é o padrão de segurança mais robusto. [cite: 128, 132]"},
+            {q: "Não há disponibilidade de HP no tap. O que devo fazer?", o: ["Baixa com código #205 e abrir ocorrência PE1", "Inserir divisor na rede", "Baixa com #203", "Baixa com #409"], c: 0, t: 35, e: "Não se deve piratear porta; deve-se abrir PE1. [cite: 133, 136]"},
+            {q: "A intensidade de conexão ideal medida no Wi-Fi Analyzer deve ser:", o: ["-10 a -70 dBm", "40 a 52 dbmv", "-12 a +12 dbmv", "Sempre zero"], c: 0, t: 25, e: "Este intervalo garante estabilidade. [cite: 139, 140]"},
+            {q: "Qual a inclinação correta da furadeira para furos expostos ao tempo?", o: ["De dentro para fora, inclinando 15° para baixo", "De dentro para fora, 15° para cima", "Ângulo reto", "De fora para dentro"], c: 0, t: 25, e: "A inclinação evita entrada de água da chuva. [cite: 144, 145]"},
+            {q: "O que é downstream?", o: ["Sinal que o CMTS envia para o Emta", "Sinal que o Emta envia para o CMTS", "Sinal de retorno", "Sinal do controle"], c: 0, t: 20, e: "É o fluxo de dados da central para o assinante. [cite: 149, 150]"},
+            {q: "Entrada 15/12. Quais níveis estarão na saída TAP do DC 06?", o: ["CA: 09 dBmV, CB: 06 dBmV", "CA: 12,5 / CB: 9,5", "CA: 13,5 / CB: 10,5", "CA: 15 / CB: 12"], c: 0, t: 40, e: "O DC 6 reduz 6dB exatos na derivação. [cite: 154, 158]"},
+            {q: "Entrada 19. No DC 12, quais os valores em OUT e TAP respectivamente?", o: ["18 dbmv e 7 dbmv", "16 dbmv e 7 dbmv", "17 dbmv e 8 dbmv", "19 dbmv e 8 dbmv"], c: 0, t: 40, e: "O DC 12 perde 1dB em OUT e 12dB no TAP. [cite: 159, 162]"},
+            {q: "O que é DOCSIS?", o: ["Padrão para interface de transmissão de dados via cabo", "Recepção de imagem", "Modem 50 mega", "Decoder HD"], c: 0, t: 25, e: "Protocolo padrão para comunicação em redes coaxiais. [cite: 164, 165]"},
+            {q: "O que acontece se amassarmos o cabo na instalação?", o: ["Alteração na impedância característica do cabo", "Melhora blindagem", "Inverte o tilt", "Satura frequência"], c: 0, t: 25, e: "Danos físicos alteram a impedância de 75 Ohms. [cite: 169, 171]"},
+            {q: "Quais as informações que não podem faltar em um atendimento de excelência?", o: ["NOW, controle remoto e aplicativo MINHA CLARO", "Telefone do coordenador", "Apenas Bina", "Nenhuma"], c: 0, t: 30, e: "Encantar o cliente com recursos digitais. [cite: 174, 177]"},
+            {q: "Local de instalação do Emta visando cobertura Wi-Fi?", o: ["Cômodo central (80% da casa entre -10 a -70dbm)", "Cozinha", "Sótão", "Perto do PC"], c: 0, t: 40, e: "Centralização minimiza áreas de sombra. [cite: 180, 185]"},
+            {q: "O que é PIP e em quais decodificadores está disponível?", o: ["Recurso para visualizar outro canal (HDNG e 4K)", "Todos os decoders HD", "Apenas canal 270", "Apenas decoders SD"], c: 0, t: 35, e: "Disponível para visualizar 2 canais em HDNG e 4K. [cite: 186, 188]"},
+            {q: "Qual rede é adequada para TV 4K Ultra HD via Wi-Fi?", o: ["5 GHZ (menos interferência e maior banda)", "2.4 GHZ", "AM/FM", "Cabo coaxial"], c: 0, t: 30, e: "5GHz suporta o alto tráfego do 4K. [cite: 193, 198]"},
+            {q: "O que é REPLAY TV nos pacotes TOP HD / HD MAX e Claro tv+?", o: ["Recomeçar evento atual ou acessar retroativos até 7 dias", "Gravar títulos do NOW", "Replay de gols", "Canais offline"], c: 0, t: 35, e: "Permite ver conteúdos de até uma semana atrás. [cite: 199, 204]"},
+            {q: "Sobre a função AUTODESLIGAR nos HDNGs:", o: ["Não deve ser desabilitada para manter atualizado", "Deve desabilitar sempre", "Já vem desligado", "Não existe"], c: 0, t: 30, e: "Essencial para atualizações automáticas. [cite: 205, 208]"},
+            {q: "Melhor qualidade de sinal digital no diagnóstico?", o: ["PS 60%, QS 100% e BER -8", "PS 100%, QS 100% e BER -5", "PS 90%, QS 70%", "PS 95%"], c: 0, t: 30, e: "BER -8 indica sinal muito superior a -5. [cite: 211, 213]"},
+            {q: "Quais recursos teremos em um decoder com Update ID 1?", o: ["Alta definição e Now (VOD)", "HD e Gravação", "Apenas HD", "Somente Gravação"], c: 0, t: 25, e: "Identifica equipamentos com HD e VOD. [cite: 216, 218]"},
+            {q: "O que é BER?", o: ["Taxa de erro de bit", "Erro de transmissão", "Erro de modulação", "Nível de sinal"], c: 0, t: 15, e: "Bit Error Rate: integridade da transmissão. [cite: 227, 231]"}
         ];
 
         let cur = 0, score = 0, timer, timeLeft, pName = "";
 
         document.getElementById('btn-iniciar').onclick = () => {
             pName = document.getElementById('p-name').value.trim();
-            if(!pName) return alert("INSIRA SEU NOME");
+            if(!pName) return alert("Por favor, digite seu nome!");
             document.getElementById('setup').classList.add('hidden');
             document.getElementById('quiz').classList.remove('hidden');
             loadQ();
@@ -141,6 +157,7 @@
             const q = QUESTIONS[cur];
             timeLeft = q.t;
             
+            document.getElementById('p-fill').style.width = ((cur / QUESTIONS.length) * 100) + "%";
             document.getElementById('q-info').innerText = `QUESTÃO ${cur+1} DE ${QUESTIONS.length}`;
             document.getElementById('q-text').innerText = q.q;
             document.getElementById('explanation').classList.add('hidden');
@@ -148,7 +165,7 @@
             const box = document.getElementById('opts');
             box.innerHTML = "";
 
-            // LOGICA ALEATORIA: Criamos um array de indices e embaralhamos
+            // LOGICA ALEATORIA
             let indices = q.o.map((_, i) => i);
             indices.sort(() => Math.random() - 0.5);
 
@@ -165,12 +182,10 @@
         function runTimer() {
             const f = document.getElementById('t-fill');
             f.style.width = "100%";
-            f.classList.remove('low-time');
             clearInterval(timer);
             timer = setInterval(() => {
                 timeLeft--;
                 f.style.width = (timeLeft/QUESTIONS[cur].t*100) + "%";
-                if(timeLeft <= 5) f.classList.add('low-time');
                 if(timeLeft <= 0) select(-1, null);
             }, 1000);
         }
@@ -183,24 +198,21 @@
 
             if(idx === correctIdx) {
                 if(b) b.classList.add('correct');
-                document.getElementById('snd-correct').play();
                 score += (100 + (timeLeft * 10));
-                confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 } });
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
             } else {
                 if(b) b.classList.add('wrong');
-                document.getElementById('snd-wrong').play();
-                // Destaca a correta mesmo estando embaralhada
                 btns.forEach(btn => {
                     if(btn.innerText === QUESTIONS[cur].o[correctIdx]) btn.classList.add('correct');
                 });
             }
 
             const exp = document.getElementById('explanation');
-            exp.innerText = `💡 ${QUESTIONS[cur].e}`;
+            exp.innerText = QUESTIONS[cur].e;
             exp.classList.remove('hidden');
 
             cur++;
-            setTimeout(loadQ, 3500);
+            setTimeout(loadQ, 4000);
         }
 
         async function finish() {
@@ -215,9 +227,7 @@
         async function calculateRank() {
             const qSnap = await getDocs(query(collection(db, "ranking"), orderBy("score", "desc")));
             let rank = 1;
-            qSnap.forEach(d => {
-                if(d.data().score > score) rank++;
-            });
+            qSnap.forEach(d => { if(d.data().score > score) rank++; });
             document.getElementById('user-rank').innerText = rank + "º lugar";
         }
 
@@ -228,7 +238,8 @@
             snap.forEach((doc) => {
                 const d = doc.data();
                 const isMe = (d.name === pName && d.score === score);
-                list.innerHTML += `<li class="${isMe ? 'my-pos' : ''}"><span>${i}. ${d.name}</span> <b>${d.score}</b></li>`;
+                let rankCls = i <= 3 ? 'rank-highlight' : '';
+                list.innerHTML += `<li class="${rankCls} ${isMe ? 'rank-highlight' : ''}"><span>${i}. ${d.name}</span> <b>${d.score}</b></li>`;
                 i++;
             });
         });
